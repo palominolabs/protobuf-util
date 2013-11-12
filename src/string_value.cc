@@ -1,0 +1,49 @@
+#include "string_value.h"
+
+#include <fcntl.h>
+#include <unistd.h>
+
+#include <algorithm>
+
+#include "glog/logging.h"
+
+#include "reader_writer.h"
+
+namespace com {
+namespace seagate {
+namespace kinetic {
+
+StringValue::StringValue(const std::string &s)
+    : s_(s), defunct_(false) {}
+
+size_t StringValue::size() {
+    return s_.size();
+}
+
+bool StringValue::TransferToFile(int fd) {
+    if (defunct_) {
+        return false;
+    }
+    defunct_ = true;
+
+    ReaderWriter reader_writer(fd);
+    return reader_writer.Write(s_.data(), s_.size());
+}
+
+bool StringValue::ToString(std::string *result) {
+    if (defunct_) {
+        return false;
+    }
+    defunct_ = true;
+
+    *result = s_;
+    return true;
+}
+
+void StringValue::Consume() {
+    defunct_ = true;
+}
+
+} // namespace kinetic
+} // namespace seagate
+} // namespace com

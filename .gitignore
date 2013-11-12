@@ -1,0 +1,9 @@
+/libkineticcommon.a
+*.swp
+/vendor/
+
+# CMake artifacts
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
