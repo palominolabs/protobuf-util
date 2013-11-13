@@ -123,6 +123,18 @@ add_custom_target(test
     DEPENDS ${TEST_BINARY}
 )
 
+if(APPLE)
+    add_custom_target(test_valgrind
+        COMMAND echo "Valgrind not supported on OSX")
+    add_custom_target(test_valgrind_report
+        COMMAND echo "Valgrind not supported on OSX")
+else(APPLE)
+    add_custom_target(test_valgrind
+        COMMAND valgrind --leak-check=full --show-reachable=yes --track-fds=yes ./${TEST_BINARY}
+        DEPENDS ${TEST_BINARY}
+    )
+endif(APPLE)
+
 add_custom_target(lint
     ./bin/lint
     WORKING_DIRECTORY ${kineticcommon_SOURCE_DIR}
