@@ -1,9 +1,24 @@
 cmake_minimum_required(VERSION 2.8.6)
 project(kineticcommon CXX C)
 
-set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter")
+option(BUILD_FOR_ARM "Build for ARM instead of x86" off)
+
+if(APPLE)
+    set(CMAKE_C_COMPILER "clang")
+    set(CMAKE_CXX_COMPILER "clang++")
+    set(PTHREAD_FLAG "") # The -pthread flag isn't needed on OSX
+    set(OPENSSL_CONFIGURE_COMMAND ./Configure darwin64-x86_64-cc)
+else(APPLE)
+    set(CMAKE_C_COMPILER "gcc")
+    set(CMAKE_CXX_COMPILER "g++")
+    set(PTHREAD_FLAG "-pthread")
+    set(OPENSSL_CONFIGURE_COMMAND ./config)
+endif(APPLE)
+
+set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter ${PTHREAD_FLAG}")
 
 include(ExternalProject)
+set(EXTERNAL_PROJECTS gflags glog gmock gtest openssl protobuf)
 
 ExternalProject_add(
     gflags
@@ -49,7 +64,7 @@ ExternalProject_add(
     URL "http://www.openssl.org/source/openssl-1.0.1e.tar.gz"
     URL_MD5 "66bf6f10f060d561929de96f9dfe5b8c"
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ./Configure darwin64-x86_64-cc
+    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND}
     INSTALL_COMMAND ""
 )
 
@@ -85,6 +100,7 @@ add_library(kineticcommon
     src/value_factory.cc
 )
 
+add_dependencies(kineticcommon ${EXTERNAL_PROJECTS})
 set(LIBRARY_DEPENDENCIES
     ${kineticcommon_SOURCE_DIR}/vendor/gflags/src/gflags/.libs/libgflags.a
     ${kineticcommon_SOURCE_DIR}/vendor/glog/src/glog/.libs/libglog.a
