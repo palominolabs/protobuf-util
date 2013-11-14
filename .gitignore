@@ -1,6 +1,8 @@
+/gtestresults.xml
+/kinetic_common_test
 /libkineticcommon.a
-*.swp
 /vendor/
+*.swp
 
 # CMake artifacts
 CMakeCache.txt

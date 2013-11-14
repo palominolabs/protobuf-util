@@ -64,6 +64,7 @@ ExternalProject_add(
 )
 
 include_directories(
+    include
     vendor/gflags/src/gflags/src
     vendor/glog/src/glog/src
     vendor/gmock/src/gmock
@@ -82,4 +83,26 @@ add_library(kineticcommon
     src/reader_writer.cc
     src/string_value.cc
     src/value_factory.cc
+)
+
+set(LIBRARY_DEPENDENCIES
+    ${kineticcommon_SOURCE_DIR}/vendor/gflags/src/gflags/.libs/libgflags.a
+    ${kineticcommon_SOURCE_DIR}/vendor/glog/src/glog/.libs/libglog.a
+    ${kineticcommon_SOURCE_DIR}/vendor/gmock/src/gmock/libgmock.a
+    ${kineticcommon_SOURCE_DIR}/vendor/gtest/src/gtest/libgtest.a
+    ${kineticcommon_SOURCE_DIR}/vendor/openssl/src/openssl/libssl.a
+    ${kineticcommon_SOURCE_DIR}/vendor/protobuf/src/protobuf/src/.libs/libprotobuf.a
+)
+set(TEST_BINARY kinetic_common_test)
+
+add_executable(${TEST_BINARY}
+    src/message_stream_test.cc
+    src/kinetic_common_test.cc
+    src/string_value_test.cc
+)
+target_link_libraries(kinetic_common_test kineticcommon ${LIBRARY_DEPENDENCIES})
+
+add_custom_target(test
+    COMMAND ${TEST_BINARY} --gtest_output=xml:gtestresults.xml
+    DEPENDS ${TEST_BINARY}
 )
