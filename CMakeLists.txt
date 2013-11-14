@@ -24,10 +24,7 @@ else(APPLE)
     set(PTHREAD_FLAG "-pthread")
 endif(APPLE)
 
-# We need both string and list versions of the compiler flags. Unfortunately
-# there's not an easy way to convert one to the other.
 set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter ${PTHREAD_FLAG}")
-set(CXX_FLAGS        -g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter ${PTHREAD_FLAG})
 
 include(ExternalProject)
 set(EXTERNAL_PROJECTS gflags glog gmock gtest openssl protobuf)
@@ -57,7 +54,7 @@ ExternalProject_add(
     URL_MD5 "4577b49f2973c90bf9ba69aa8166b786"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND ${CMAKE_CXX_COMPILER} ${CXX_FLAGS} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gtest -I../gtest/include -c ../gtest/src/gtest-all.cc && ar -rv libgtest.a gtest-all.o
+    BUILD_COMMAND ${CMAKE_CXX_COMPILER} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gtest -I../gtest/include -c ../gtest/src/gtest-all.cc && ar -rv libgtest.a gtest-all.o
     INSTALL_COMMAND ""
 )
 
@@ -68,7 +65,7 @@ ExternalProject_add(
     URL_MD5 "f547f47321ca88d3965ca2efdcc2a3c1"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND ${CMAKE_CXX_COMPILER} ${CXX_FLAGS} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gmock -I../gmock/include -I../gtest -I../gtest/include -c ../gmock/src/gmock-all.cc && ar -rv libgmock.a gmock-all.o
+    BUILD_COMMAND ${CMAKE_CXX_COMPILER} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gmock -I../gmock/include -I../gtest -I../gtest/include -c ../gmock/src/gmock-all.cc && ar -rv libgmock.a gmock-all.o
     INSTALL_COMMAND ""
     DEPENDS gtest
 )
