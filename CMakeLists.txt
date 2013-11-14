@@ -7,88 +7,107 @@ if(APPLE)
     set(CMAKE_C_COMPILER "clang")
     set(CMAKE_CXX_COMPILER "clang++")
     set(PTHREAD_FLAG "") # The -pthread flag isn't needed on OSX
-    set(OPENSSL_CONFIGURE_COMMAND ./Configure darwin64-x86_64-cc)
+    set(OPENSSL_CONFIGURE_COMMAND ../openssl/Configure darwin64-x86_64-cc)
 else(APPLE)
-    set(CMAKE_C_COMPILER "gcc")
-    set(CMAKE_CXX_COMPILER "g++")
+    if(${BUILD_FOR_ARM})
+        set(CMAKE_C_COMPILER "arm-marvell-linux-gnueabi-gcc")
+        set(CMAKE_CXX_COMPILER "arm-marvell-linux-gnueabi-g++")
+        set(CMAKE_RANLIB "arm-marvell-linux-gnueabi-ranlib")
+        set(OPENSSL_CONFIGURE_COMMAND ../openssl/Configure linux-armv4)
+        set(CONFIG_HOST_FLAG --host=arm)
+        set(CHILD_MAKE_FLAGS CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} RANLIB=${CMAKE_RANLIB})
+    else(${BUILD_FOR_ARM})
+        set(CMAKE_C_COMPILER "gcc")
+        set(CMAKE_CXX_COMPILER "g++")
+        set(OPENSSL_CONFIGURE_COMMAND ../openssl/config)
+    endif(${BUILD_FOR_ARM})
     set(PTHREAD_FLAG "-pthread")
-    set(OPENSSL_CONFIGURE_COMMAND ./config)
 endif(APPLE)
 
+# We need both string and list versions of the compiler flags. Unfortunately
+# there's not an easy way to convert one to the other.
 set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter ${PTHREAD_FLAG}")
+set(CXX_FLAGS        -g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter ${PTHREAD_FLAG})
 
 include(ExternalProject)
 set(EXTERNAL_PROJECTS gflags glog gmock gtest openssl protobuf)
 
+set(PREFIX "${kineticcommon_SOURCE_DIR}/vendor")
+
 ExternalProject_add(
     gflags
-    PREFIX "vendor/gflags"
+    PREFIX ${PREFIX}
     URL "https://gflags.googlecode.com/files/gflags-2.0-no-svn-files.tar.gz"
     URL_MD5 "9084829124e02a7e6be0f0f824523423"
-    BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ./configure --enable-static
-    INSTALL_COMMAND ""
+    CONFIGURE_COMMAND ../gflags/configure --prefix=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
 )
 
 ExternalProject_add(
     glog
-    PREFIX "vendor/glog"
+    PREFIX ${PREFIX}
     URL "https://google-glog.googlecode.com/files/glog-0.3.3.tar.gz"
     URL_MD5 "a6fd2c22f8996846e34c763422717c18"
+    CONFIGURE_COMMAND ../glog/configure --prefix=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+)
+
+ExternalProject_add(
+    gtest
+    PREFIX ${PREFIX}
+    URL "https://googletest.googlecode.com/files/gtest-1.6.0.zip"
+    URL_MD5 "4577b49f2973c90bf9ba69aa8166b786"
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ./configure --enable-static
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ${CMAKE_CXX_COMPILER} ${CXX_FLAGS} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gtest -I../gtest/include -c ../gtest/src/gtest-all.cc && ar -rv libgtest.a gtest-all.o
     INSTALL_COMMAND ""
 )
 
 ExternalProject_add(
     gmock
-    PREFIX "vendor/gmock"
+    PREFIX ${PREFIX}
     URL "https://googlemock.googlecode.com/files/gmock-1.6.0.zip"
     URL_MD5 "f547f47321ca88d3965ca2efdcc2a3c1"
     BUILD_IN_SOURCE 1
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ${CMAKE_CXX_COMPILER} ${CXX_FLAGS} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gmock -I../gmock/include -I../gtest -I../gtest/include -c ../gmock/src/gmock-all.cc && ar -rv libgmock.a gmock-all.o
     INSTALL_COMMAND ""
-)
-
-ExternalProject_add(
-    gtest
-    PREFIX "vendor/gtest"
-    URL "https://googletest.googlecode.com/files/gtest-1.6.0.zip"
-    URL_MD5 "4577b49f2973c90bf9ba69aa8166b786"
-    BUILD_IN_SOURCE 1
-    INSTALL_COMMAND ""
+    DEPENDS gtest
 )
 
 ExternalProject_add(
     openssl
-    PREFIX "vendor/openssl"
+    PREFIX ${PREFIX}
     URL "http://www.openssl.org/source/openssl-1.0.1e.tar.gz"
     URL_MD5 "66bf6f10f060d561929de96f9dfe5b8c"
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND}
-    INSTALL_COMMAND ""
+    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${PREFIX}
+    BUILD_COMMAND make ${CHILD_MAKE_FLAGS}
+)
+
+# The protobuf build requires the existence of a protoc binary that can be
+# executed on the host machine. To handle cross compilation, we always build
+# protobuf once for the host so that we have a suitable copy of protoc.
+ExternalProject_add(
+    protoc
+    PREFIX ${PREFIX}/host
+    URL "https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2"
+    URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
+    CONFIGURE_COMMAND ../protoc/configure --prefix=${PREFIX}/host --enable-static
 )
 
 ExternalProject_add(
     protobuf
-    PREFIX "vendor/protobuf"
+    PREFIX ${PREFIX}
     URL "https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2"
     URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
-    BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ./configure --enable-static
-    INSTALL_COMMAND ""
+    CONFIGURE_COMMAND ../protobuf/configure --prefix=${PREFIX} --enable-static --with-protoc=../../host/bin/protoc ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    DEPENDS protoc
 )
 
 include_directories(
     include
-    vendor/gflags/src/gflags/src
-    vendor/glog/src/glog/src
-    vendor/gmock/src/gmock
-    vendor/gmock/src/gmock/include
-    vendor/gtest/src/gtest
-    vendor/gtest/src/gtest/include
-    vendor/openssl/src/openssl
-    vendor/openssl/src/openssl/include
-    vendor/protobuf/src/protobuf/src
+    vendor/include
+    vendor/src/gmock/include
+    vendor/src/gtest/include
 )
 
 add_library(kineticcommon
@@ -100,13 +119,13 @@ add_library(kineticcommon
 
 add_dependencies(kineticcommon ${EXTERNAL_PROJECTS})
 set(LIBRARY_DEPENDENCIES
-    ${kineticcommon_SOURCE_DIR}/vendor/gflags/src/gflags/.libs/libgflags.a
-    ${kineticcommon_SOURCE_DIR}/vendor/glog/src/glog/.libs/libglog.a
-    ${kineticcommon_SOURCE_DIR}/vendor/gmock/src/gmock/libgmock.a
-    ${kineticcommon_SOURCE_DIR}/vendor/gtest/src/gtest/libgtest.a
-    ${kineticcommon_SOURCE_DIR}/vendor/openssl/src/openssl/libssl.a
-    ${kineticcommon_SOURCE_DIR}/vendor/openssl/src/openssl/libcrypto.a
-    ${kineticcommon_SOURCE_DIR}/vendor/protobuf/src/protobuf/src/.libs/libprotobuf.a
+    ${kineticcommon_SOURCE_DIR}/vendor/src/gmock/libgmock.a
+    ${kineticcommon_SOURCE_DIR}/vendor/src/gtest/libgtest.a
+    ${kineticcommon_SOURCE_DIR}/vendor/lib/libgflags.a
+    ${kineticcommon_SOURCE_DIR}/vendor/lib/libglog.a
+    ${kineticcommon_SOURCE_DIR}/vendor/lib/libssl.a
+    ${kineticcommon_SOURCE_DIR}/vendor/lib/libcrypto.a
+    ${kineticcommon_SOURCE_DIR}/vendor/lib/libprotobuf.a
     dl
 )
 set(TEST_BINARY kinetic_common_test)
