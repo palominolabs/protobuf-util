@@ -113,7 +113,8 @@ bool MessageStream::WriteMessage(const ::google::protobuf::Message &message,
     return true;
 }
 
-MessageStreamFactory::MessageStreamFactory(SSL_CTX *ssl_context, ValueFactory &value_factory)
+MessageStreamFactory::MessageStreamFactory(SSL_CTX *ssl_context,
+        ValueFactoryInterface &value_factory)
     : ssl_context_(ssl_context), value_factory_(value_factory) {}
 
 bool MessageStreamFactory::NewMessageStream(int fd, bool use_ssl,

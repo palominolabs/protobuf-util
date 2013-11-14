@@ -21,14 +21,14 @@ class ByteStreamInterface {
 
 class PlainByteStream : public ByteStreamInterface {
     public:
-    PlainByteStream(int fd, ValueFactory &value_factory);
+    PlainByteStream(int fd, ValueFactoryInterface &value_factory);
     bool Read(void *buf, size_t n);
     bool Write(const void *buf, size_t n);
     ValueInterface *ReadValue(size_t n);
 
     private:
     int fd_;
-    ValueFactory &value_factory_;
+    ValueFactoryInterface &value_factory_;
     DISALLOW_COPY_AND_ASSIGN(PlainByteStream);
 };
 

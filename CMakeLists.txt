@@ -96,7 +96,6 @@ add_library(kineticcommon
     src/message_stream.cc
     src/reader_writer.cc
     src/string_value.cc
-    src/value_factory.cc
 )
 
 add_dependencies(kineticcommon ${EXTERNAL_PROJECTS})

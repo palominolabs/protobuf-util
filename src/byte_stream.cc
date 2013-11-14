@@ -12,7 +12,7 @@ namespace com {
 namespace seagate {
 namespace kinetic {
 
-PlainByteStream::PlainByteStream(int fd, ValueFactory &value_factory)
+PlainByteStream::PlainByteStream(int fd, ValueFactoryInterface &value_factory)
     : fd_(fd), value_factory_(value_factory) {}
 
 bool PlainByteStream::Read(void *buf, size_t n) {

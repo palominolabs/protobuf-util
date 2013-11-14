@@ -52,12 +52,12 @@ class MessageStreamFactoryInterface {
 
 class MessageStreamFactory : public MessageStreamFactoryInterface {
     public:
-    MessageStreamFactory(SSL_CTX *ssl_context, ValueFactory &value_factory);
+    MessageStreamFactory(SSL_CTX *ssl_context, ValueFactoryInterface &value_factory);
     bool NewMessageStream(int fd, bool use_ssl, MessageStreamInterface **message_stream);
 
     private:
     SSL_CTX *ssl_context_;
-    ValueFactory &value_factory_;
+    ValueFactoryInterface &value_factory_;
     DISALLOW_COPY_AND_ASSIGN(MessageStreamFactory);
 };
 

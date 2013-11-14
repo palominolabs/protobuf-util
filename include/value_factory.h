@@ -8,7 +8,13 @@ namespace com {
 namespace seagate {
 namespace kinetic {
 
-class ValueFactory {
+class ValueFactoryInterface {
+    public:
+    virtual ~ValueFactoryInterface() {}
+    virtual ValueInterface *NewValue(int fd, size_t n) = 0;
+};
+
+class ValueFactory : public ValueFactoryInterface {
     public:
     ValueFactory();
     ValueInterface *NewValue(int fd, size_t n);
