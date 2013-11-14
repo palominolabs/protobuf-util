@@ -105,9 +105,10 @@ set(LIBRARY_DEPENDENCIES
     ${kineticcommon_SOURCE_DIR}/vendor/glog/src/glog/.libs/libglog.a
     ${kineticcommon_SOURCE_DIR}/vendor/gmock/src/gmock/libgmock.a
     ${kineticcommon_SOURCE_DIR}/vendor/gtest/src/gtest/libgtest.a
-    ${kineticcommon_SOURCE_DIR}/vendor/openssl/src/openssl/libcrypto.a
     ${kineticcommon_SOURCE_DIR}/vendor/openssl/src/openssl/libssl.a
+    ${kineticcommon_SOURCE_DIR}/vendor/openssl/src/openssl/libcrypto.a
     ${kineticcommon_SOURCE_DIR}/vendor/protobuf/src/protobuf/src/.libs/libprotobuf.a
+    dl
 )
 set(TEST_BINARY kinetic_common_test)
 
