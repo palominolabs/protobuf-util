@@ -1,5 +1,5 @@
-#ifndef KINETIC_VALUE_FACTORY_H_
-#define KINETIC_VALUE_FACTORY_H_
+#ifndef KINETIC_COMMON_VALUE_FACTORY_H_
+#define KINETIC_COMMON_VALUE_FACTORY_H_
 
 #include "common.h"
 #include "value_interface.h"
@@ -21,4 +21,4 @@ class ValueFactory {
 } // namespace seagate
 } // namespace com
 
-#endif  // KINETIC_VALUE_FACTORY_H_
+#endif  // KINETIC_COMMON_VALUE_FACTORY_H_

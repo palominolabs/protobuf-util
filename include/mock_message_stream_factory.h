@@ -1,5 +1,5 @@
-#ifndef KINETIC_MOCK_MESSAGE_STREAM_FACTORY_H_
-#define KINETIC_MOCK_MESSAGE_STREAM_FACTORY_H_
+#ifndef KINETIC_COMMON_MOCK_MESSAGE_STREAM_FACTORY_H_
+#define KINETIC_COMMON_MOCK_MESSAGE_STREAM_FACTORY_H_
 
 #include "message_stream_factory_interface.h"
 
@@ -18,4 +18,4 @@ class MockMessageStreamFactory : public MessageStreamFactoryInterface {
 }  // namespace seagate
 }  // namespace com
 
-#endif  // KINETIC_MOCK_MESSAGE_STREAM_FACTORY_H_
+#endif  // KINETIC_COMMON_MOCK_MESSAGE_STREAM_FACTORY_H_

@@ -1,5 +1,5 @@
-#ifndef KINETIC_STRING_VALUE_H_
-#define KINETIC_STRING_VALUE_H_
+#ifndef KINETIC_COMMON_STRING_VALUE_H_
+#define KINETIC_COMMON_STRING_VALUE_H_
 
 #include "value_interface.h"
 
@@ -30,4 +30,4 @@ class StringValue : public ValueInterface {
 } // namespace seagate
 } // namespace com
 
-#endif  // KINETIC_STRING_VALUE_H_
+#endif  // KINETIC_COMMON_STRING_VALUE_H_

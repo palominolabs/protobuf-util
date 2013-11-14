@@ -1,5 +1,5 @@
-#ifndef KINETIC_BYTE_STREAM_H_
-#define KINETIC_BYTE_STREAM_H_
+#ifndef KINETIC_COMMON_BYTE_STREAM_H_
+#define KINETIC_COMMON_BYTE_STREAM_H_
 
 #include "openssl/ssl.h"
 
@@ -48,4 +48,4 @@ class SslByteStream : public ByteStreamInterface {
 } // namespace seagate
 } // namespace com
 
-#endif  // KINETIC_BYTE_STREAM_H_
+#endif  // KINETIC_COMMON_BYTE_STREAM_H_

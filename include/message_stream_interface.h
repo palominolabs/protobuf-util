@@ -1,5 +1,5 @@
-#ifndef KINETIC_MESSAGE_STREAM_INTERFACE_H_
-#define KINETIC_MESSAGE_STREAM_INTERFACE_H_
+#ifndef KINETIC_COMMON_MESSAGE_STREAM_INTERFACE_H_
+#define KINETIC_COMMON_MESSAGE_STREAM_INTERFACE_H_
 
 #include "google/protobuf/message.h"
 
@@ -22,4 +22,4 @@ class MessageStreamInterface {
 }  // namespace seagate
 }  // namespace com
 
-#endif  // KINETIC_MESSAGE_STREAM_INTERFACE_H_
+#endif  // KINETIC_COMMON_MESSAGE_STREAM_INTERFACE_H_

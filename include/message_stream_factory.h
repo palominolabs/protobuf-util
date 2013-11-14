@@ -1,5 +1,5 @@
-#ifndef KINETIC_MESSAGE_STREAM_FACTORY_H_
-#define KINETIC_MESSAGE_STREAM_FACTORY_H_
+#ifndef KINETIC_COMMON_MESSAGE_STREAM_FACTORY_H_
+#define KINETIC_COMMON_MESSAGE_STREAM_FACTORY_H_
 
 #include "openssl/ssl.h"
 
@@ -27,4 +27,4 @@ class MessageStreamFactory : public MessageStreamFactoryInterface {
 }  // namespace seagate
 }  // namespace com
 
-#endif  // KINETIC_MESSAGE_STREAM_FACTORY_H_
+#endif  // KINETIC_COMMON_MESSAGE_STREAM_FACTORY_H_

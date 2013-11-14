@@ -106,3 +106,9 @@ add_custom_target(test
     COMMAND ${TEST_BINARY} --gtest_output=xml:gtestresults.xml
     DEPENDS ${TEST_BINARY}
 )
+
+add_custom_target(lint
+    ./bin/lint
+    WORKING_DIRECTORY ${kineticcommon_SOURCE_DIR}
+    COMMENT "Running style checker" VERBATIM
+)

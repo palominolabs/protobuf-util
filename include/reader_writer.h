@@ -1,5 +1,5 @@
-#ifndef KINETIC_READER_WRITER_H_
-#define KINETIC_READER_WRITER_H_
+#ifndef KINETIC_COMMON_READER_WRITER_H_
+#define KINETIC_COMMON_READER_WRITER_H_
 
 #include <stddef.h>
 
@@ -24,4 +24,4 @@ class ReaderWriter {
 } // namespace seagate
 } // namespace com
 
-#endif  // KINETIC_READER_WRITER_H_
+#endif  // KINETIC_COMMON_READER_WRITER_H_

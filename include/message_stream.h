@@ -1,5 +1,5 @@
-#ifndef KINETIC_MESSAGE_STREAM_H_
-#define KINETIC_MESSAGE_STREAM_H_
+#ifndef KINETIC_COMMON_MESSAGE_STREAM_H_
+#define KINETIC_COMMON_MESSAGE_STREAM_H_
 
 #include "byte_stream.h"
 #include "common.h"
@@ -25,4 +25,4 @@ class MessageStream : public MessageStreamInterface {
 }  // namespace seagate
 }  // namespace com
 
-#endif  // KINETIC_MESSAGE_STREAM_H_
+#endif  // KINETIC_COMMON_MESSAGE_STREAM_H_

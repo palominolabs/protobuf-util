@@ -1,5 +1,5 @@
-#ifndef KINETIC_VALUE_INTERFACE_H_
-#define KINETIC_VALUE_INTERFACE_H_
+#ifndef KINETIC_COMMON_VALUE_INTERFACE_H_
+#define KINETIC_COMMON_VALUE_INTERFACE_H_
 
 #include <string>
 
@@ -59,4 +59,4 @@ class MockValue : public ValueInterface {
 } // namespace seagate
 } // namespace com
 
-#endif  // KINETIC_VALUE_INTERFACE_H_
+#endif  // KINETIC_COMMON_VALUE_INTERFACE_H_

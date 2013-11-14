@@ -1,5 +1,5 @@
-#ifndef KINETIC_MOCK_MESSAGE_STREAM_H_
-#define KINETIC_MOCK_MESSAGE_STREAM_H_
+#ifndef KINETIC_COMMON_MOCK_MESSAGE_STREAM_H_
+#define KINETIC_COMMON_MOCK_MESSAGE_STREAM_H_
 
 #include "gmock/gmock.h"
 
@@ -24,4 +24,4 @@ class MockMessageStream : public MessageStreamInterface {
 }  // namespace seagate
 }  // namespace com
 
-#endif  // KINETIC_MOCK_MESSAGE_STREAM_H_
+#endif  // KINETIC_COMMON_MOCK_MESSAGE_STREAM_H_
