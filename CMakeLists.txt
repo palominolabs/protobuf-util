@@ -94,7 +94,6 @@ include_directories(
 add_library(kineticcommon
     src/byte_stream.cc
     src/message_stream.cc
-    src/message_stream_factory.cc
     src/reader_writer.cc
     src/string_value.cc
     src/value_factory.cc
@@ -106,6 +105,7 @@ set(LIBRARY_DEPENDENCIES
     ${kineticcommon_SOURCE_DIR}/vendor/glog/src/glog/.libs/libglog.a
     ${kineticcommon_SOURCE_DIR}/vendor/gmock/src/gmock/libgmock.a
     ${kineticcommon_SOURCE_DIR}/vendor/gtest/src/gtest/libgtest.a
+    ${kineticcommon_SOURCE_DIR}/vendor/openssl/src/openssl/libcrypto.a
     ${kineticcommon_SOURCE_DIR}/vendor/openssl/src/openssl/libssl.a
     ${kineticcommon_SOURCE_DIR}/vendor/protobuf/src/protobuf/src/.libs/libprotobuf.a
 )
