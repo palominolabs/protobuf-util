@@ -7,7 +7,7 @@
 
 #include "byte_stream.h"
 #include "common.h"
-#include "value_factory.h"
+#include "value_factory_interface.h"
 #include "value_interface.h"
 
 namespace palominolabs {
