@@ -119,8 +119,8 @@ add_dependencies(protobufutil ${EXTERNAL_PROJECTS})
 set(LIBRARY_DEPENDENCIES
     ${protobufutil_SOURCE_DIR}/vendor/src/gmock/libgmock.a
     ${protobufutil_SOURCE_DIR}/vendor/src/gtest/libgtest.a
-    ${protobufutil_SOURCE_DIR}/vendor/lib/libgflags.a
     ${protobufutil_SOURCE_DIR}/vendor/lib/libglog.a
+    ${protobufutil_SOURCE_DIR}/vendor/lib/libgflags.a
     ${protobufutil_SOURCE_DIR}/vendor/lib/libssl.a
     ${protobufutil_SOURCE_DIR}/vendor/lib/libcrypto.a
     ${protobufutil_SOURCE_DIR}/vendor/lib/libprotobuf.a
