@@ -1,6 +1,6 @@
 /gtestresults.xml
-/kinetic_common_test
-/libkineticcommon.a
+/protobufutil_test
+/libprotobufutil.a
 /vendor/
 *.swp
 

@@ -1,5 +1,5 @@
-#ifndef KINETIC_COMMON_MESSAGE_STREAM_H_
-#define KINETIC_COMMON_MESSAGE_STREAM_H_
+#ifndef PROTOBUFUTIL_MESSAGE_STREAM_H_
+#define PROTOBUFUTIL_MESSAGE_STREAM_H_
 
 #include "gmock/gmock.h"
 #include "google/protobuf/message.h"
@@ -10,9 +10,8 @@
 #include "value_factory.h"
 #include "value_interface.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 class MessageStreamInterface {
     public:
@@ -68,8 +67,7 @@ class MockMessageStreamFactory : public MessageStreamFactoryInterface {
         bool(int fd, bool use_ssl, MessageStreamInterface **message_stream));
 };
 
-}  // namespace kinetic
-}  // namespace seagate
-}  // namespace com
+}  // namespace protobufutil
+}  // namespace palominolabs
 
-#endif  // KINETIC_COMMON_MESSAGE_STREAM_H_
+#endif  // PROTOBUFUTIL_MESSAGE_STREAM_H_

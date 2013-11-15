@@ -5,9 +5,8 @@
 
 #include "glog/logging.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 ReaderWriter::ReaderWriter(int fd) : fd_(fd) {}
 
@@ -54,6 +53,5 @@ bool ReaderWriter::Write(const void *buf, size_t n) {
     return true;
 }
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs

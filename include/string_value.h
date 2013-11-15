@@ -1,11 +1,10 @@
-#ifndef KINETIC_COMMON_STRING_VALUE_H_
-#define KINETIC_COMMON_STRING_VALUE_H_
+#ifndef PROTOBUFUTIL_STRING_VALUE_H_
+#define PROTOBUFUTIL_STRING_VALUE_H_
 
 #include "value_interface.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 /*
  * StringValue represents a value stored internally as a plain string. It's
@@ -26,8 +25,7 @@ class StringValue : public ValueInterface {
     DISALLOW_COPY_AND_ASSIGN(StringValue);
 };
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs
 
-#endif  // KINETIC_COMMON_STRING_VALUE_H_
+#endif  // PROTOBUFUTIL_STRING_VALUE_H_

@@ -8,9 +8,8 @@
 #include "message_stream.h"
 #include "string_value.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 using ::google::protobuf::FileDescriptorProto;
 
@@ -149,6 +148,5 @@ TEST_F(MessageStreamTest, ReadMessageWithEmptyValueResultsInValidNonNullValue) {
     delete value;
 }
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs

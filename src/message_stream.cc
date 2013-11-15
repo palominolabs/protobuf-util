@@ -6,9 +6,8 @@
 
 #include "string_value.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 MessageStream::MessageStream(ByteStreamInterface *byte_stream)
     : byte_stream_(byte_stream) {}
@@ -149,6 +148,5 @@ bool MessageStreamFactory::NewMessageStream(int fd, bool use_ssl,
     return true;
 }
 
-}  // namespace kinetic
-}  // namespace seagate
-}  // namespace com
+}  // namespace protobufutil
+}  // namespace palominolabs

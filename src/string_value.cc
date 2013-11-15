@@ -9,9 +9,8 @@
 
 #include "reader_writer.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 StringValue::StringValue(const std::string &s)
     : s_(s), defunct_(false) {}
@@ -44,6 +43,5 @@ void StringValue::Consume() {
     defunct_ = true;
 }
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs

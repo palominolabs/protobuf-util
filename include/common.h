@@ -1,5 +1,5 @@
-#ifndef KINETIC_COMMON_COMMON_H_
-#define KINETIC_COMMON_COMMON_H_
+#ifndef PROTOBUFUTIL_COMMON_H_
+#define PROTOBUFUTIL_COMMON_H_
 
 // Most classes do not need copy or assignment constructors and should use this
 // macro to disable them.
@@ -7,4 +7,4 @@
     TypeName(const TypeName&); \
     void operator=(const TypeName&)
 
-#endif  // KINETIC_COMMON_COMMON_H_
+#endif  // PROTOBUFUTIL_COMMON_H_

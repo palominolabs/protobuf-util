@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.6)
-project(kineticcommon CXX C)
+project(protobufutil CXX C)
 
 option(BUILD_FOR_ARM "Build for ARM instead of x86" off)
 
@@ -29,7 +29,7 @@ set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter 
 include(ExternalProject)
 set(EXTERNAL_PROJECTS gflags glog gmock gtest openssl protobuf)
 
-set(PREFIX "${kineticcommon_SOURCE_DIR}/vendor")
+set(PREFIX "${protobufutil_SOURCE_DIR}/vendor")
 
 ExternalProject_add(
     gflags
@@ -107,32 +107,32 @@ include_directories(
     vendor/src/gtest/include
 )
 
-add_library(kineticcommon
+add_library(protobufutil
     src/byte_stream.cc
     src/message_stream.cc
     src/reader_writer.cc
     src/string_value.cc
 )
 
-add_dependencies(kineticcommon ${EXTERNAL_PROJECTS})
+add_dependencies(protobufutil ${EXTERNAL_PROJECTS})
 set(LIBRARY_DEPENDENCIES
-    ${kineticcommon_SOURCE_DIR}/vendor/src/gmock/libgmock.a
-    ${kineticcommon_SOURCE_DIR}/vendor/src/gtest/libgtest.a
-    ${kineticcommon_SOURCE_DIR}/vendor/lib/libgflags.a
-    ${kineticcommon_SOURCE_DIR}/vendor/lib/libglog.a
-    ${kineticcommon_SOURCE_DIR}/vendor/lib/libssl.a
-    ${kineticcommon_SOURCE_DIR}/vendor/lib/libcrypto.a
-    ${kineticcommon_SOURCE_DIR}/vendor/lib/libprotobuf.a
+    ${protobufutil_SOURCE_DIR}/vendor/src/gmock/libgmock.a
+    ${protobufutil_SOURCE_DIR}/vendor/src/gtest/libgtest.a
+    ${protobufutil_SOURCE_DIR}/vendor/lib/libgflags.a
+    ${protobufutil_SOURCE_DIR}/vendor/lib/libglog.a
+    ${protobufutil_SOURCE_DIR}/vendor/lib/libssl.a
+    ${protobufutil_SOURCE_DIR}/vendor/lib/libcrypto.a
+    ${protobufutil_SOURCE_DIR}/vendor/lib/libprotobuf.a
     dl
 )
-set(TEST_BINARY kinetic_common_test)
+set(TEST_BINARY protobufutil_test)
 
 add_executable(${TEST_BINARY}
     src/message_stream_test.cc
-    src/kinetic_common_test.cc
+    src/protobufutil_test.cc
     src/string_value_test.cc
 )
-target_link_libraries(kinetic_common_test kineticcommon ${LIBRARY_DEPENDENCIES})
+target_link_libraries(protobufutil_test protobufutil ${LIBRARY_DEPENDENCIES})
 
 add_custom_target(test
     COMMAND ${TEST_BINARY} --gtest_output=xml:gtestresults.xml
@@ -153,6 +153,6 @@ endif(APPLE)
 
 add_custom_target(lint
     ./bin/lint
-    WORKING_DIRECTORY ${kineticcommon_SOURCE_DIR}
+    WORKING_DIRECTORY ${protobufutil_SOURCE_DIR}
     COMMENT "Running style checker" VERBATIM
 )

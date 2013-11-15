@@ -6,9 +6,8 @@
 
 #include "string_value.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 TEST(StringValueTest, TransferToFileWorks) {
     // Write StringValue into a pipe
@@ -62,6 +61,5 @@ TEST(StringValueTest, ConsumeDepletesObject) {
     ASSERT_FALSE(value.ToString(&result));
 }
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs

@@ -1,13 +1,12 @@
-#ifndef KINETIC_COMMON_READER_WRITER_H_
-#define KINETIC_COMMON_READER_WRITER_H_
+#ifndef PROTOBUFUTIL_READER_WRITER_H_
+#define PROTOBUFUTIL_READER_WRITER_H_
 
 #include <stddef.h>
 
 #include "common.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 class ReaderWriter {
     public:
@@ -20,8 +19,7 @@ class ReaderWriter {
     DISALLOW_COPY_AND_ASSIGN(ReaderWriter);
 };
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs
 
-#endif  // KINETIC_COMMON_READER_WRITER_H_
+#endif  // PROTOBUFUTIL_READER_WRITER_H_

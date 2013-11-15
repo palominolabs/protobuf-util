@@ -1,5 +1,5 @@
-#ifndef KINETIC_COMMON_BYTE_STREAM_H_
-#define KINETIC_COMMON_BYTE_STREAM_H_
+#ifndef PROTOBUFUTIL_BYTE_STREAM_H_
+#define PROTOBUFUTIL_BYTE_STREAM_H_
 
 #include "openssl/ssl.h"
 
@@ -7,9 +7,8 @@
 #include "value_factory.h"
 #include "value_interface.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 class ByteStreamInterface {
     public:
@@ -44,8 +43,7 @@ class SslByteStream : public ByteStreamInterface {
     DISALLOW_COPY_AND_ASSIGN(SslByteStream);
 };
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs
 
-#endif  // KINETIC_COMMON_BYTE_STREAM_H_
+#endif  // PROTOBUFUTIL_BYTE_STREAM_H_

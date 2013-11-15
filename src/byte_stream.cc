@@ -8,9 +8,8 @@
 #include "reader_writer.h"
 #include "string_value.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 PlainByteStream::PlainByteStream(int fd, ValueFactoryInterface &value_factory)
     : fd_(fd), value_factory_(value_factory) {}
@@ -64,6 +63,5 @@ ValueInterface *SslByteStream::ReadValue(size_t n) {
     return new StringValue(value);
 }
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs

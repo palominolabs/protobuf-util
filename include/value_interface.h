@@ -1,5 +1,5 @@
-#ifndef KINETIC_COMMON_VALUE_INTERFACE_H_
-#define KINETIC_COMMON_VALUE_INTERFACE_H_
+#ifndef PROTOBUFUTIL_VALUE_INTERFACE_H_
+#define PROTOBUFUTIL_VALUE_INTERFACE_H_
 
 #include <string>
 
@@ -7,9 +7,8 @@
 
 #include "common.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 /*
  * ValueInterface represents a byte-array value arriving in a PUT request. This
@@ -55,8 +54,7 @@ class MockValue : public ValueInterface {
     MOCK_METHOD0(Consume, void());
 };
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs
 
-#endif  // KINETIC_COMMON_VALUE_INTERFACE_H_
+#endif  // PROTOBUFUTIL_VALUE_INTERFACE_H_

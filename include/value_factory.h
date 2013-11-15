@@ -1,12 +1,11 @@
-#ifndef KINETIC_COMMON_VALUE_FACTORY_H_
-#define KINETIC_COMMON_VALUE_FACTORY_H_
+#ifndef PROTOBUFUTIL_VALUE_FACTORY_H_
+#define PROTOBUFUTIL_VALUE_FACTORY_H_
 
 #include "common.h"
 #include "value_interface.h"
 
-namespace com {
-namespace seagate {
-namespace kinetic {
+namespace palominolabs {
+namespace protobufutil {
 
 class ValueFactoryInterface {
     public:
@@ -23,8 +22,7 @@ class ValueFactory : public ValueFactoryInterface {
     DISALLOW_COPY_AND_ASSIGN(ValueFactory);
 };
 
-} // namespace kinetic
-} // namespace seagate
-} // namespace com
+} // namespace protobufutil
+} // namespace palominolabs
 
-#endif  // KINETIC_COMMON_VALUE_FACTORY_H_
+#endif  // PROTOBUFUTIL_VALUE_FACTORY_H_
