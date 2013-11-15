@@ -44,7 +44,8 @@ ExternalProject_add(
     PREFIX ${PREFIX}
     URL "https://google-glog.googlecode.com/files/glog-0.3.3.tar.gz"
     URL_MD5 "a6fd2c22f8996846e34c763422717c18"
-    CONFIGURE_COMMAND ../glog/configure --prefix=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    CONFIGURE_COMMAND ../glog/configure --prefix=${PREFIX} --with-gflags=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    DEPENDS gflags
 )
 
 ExternalProject_add(
