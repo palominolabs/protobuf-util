@@ -34,7 +34,7 @@ set(PREFIX "${protobufutil_SOURCE_DIR}/vendor")
 ExternalProject_add(
     gflags
     PREFIX ${PREFIX}
-    URL "https://gflags.googlecode.com/files/gflags-2.0-no-svn-files.tar.gz"
+    URL "${protobufutil_SOURCE_DIR}/tarballs/gflags-2.0-no-svn-files.tar.gz"
     URL_MD5 "9084829124e02a7e6be0f0f824523423"
     CONFIGURE_COMMAND ../gflags/configure --prefix=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
 )
@@ -42,7 +42,7 @@ ExternalProject_add(
 ExternalProject_add(
     glog
     PREFIX ${PREFIX}
-    URL "https://google-glog.googlecode.com/files/glog-0.3.3.tar.gz"
+    URL "${protobufutil_SOURCE_DIR}/tarballs/glog-0.3.3.tar.gz"
     URL_MD5 "a6fd2c22f8996846e34c763422717c18"
     CONFIGURE_COMMAND ../glog/configure --prefix=${PREFIX} --with-gflags=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
     DEPENDS gflags
@@ -51,7 +51,7 @@ ExternalProject_add(
 ExternalProject_add(
     gtest
     PREFIX ${PREFIX}
-    URL "https://googletest.googlecode.com/files/gtest-1.6.0.zip"
+    URL "${protobufutil_SOURCE_DIR}/tarballs/gtest-1.6.0.zip"
     URL_MD5 "4577b49f2973c90bf9ba69aa8166b786"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
@@ -62,7 +62,7 @@ ExternalProject_add(
 ExternalProject_add(
     gmock
     PREFIX ${PREFIX}
-    URL "https://googlemock.googlecode.com/files/gmock-1.6.0.zip"
+    URL "${protobufutil_SOURCE_DIR}/tarballs/gmock-1.6.0.zip"
     URL_MD5 "f547f47321ca88d3965ca2efdcc2a3c1"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
@@ -74,7 +74,7 @@ ExternalProject_add(
 ExternalProject_add(
     openssl
     PREFIX ${PREFIX}
-    URL "http://www.openssl.org/source/openssl-1.0.1e.tar.gz"
+    URL "${protobufutil_SOURCE_DIR}/tarballs/openssl-1.0.1e.tar.gz"
     URL_MD5 "66bf6f10f060d561929de96f9dfe5b8c"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${PREFIX}
@@ -87,7 +87,7 @@ ExternalProject_add(
 ExternalProject_add(
     protoc
     PREFIX ${PREFIX}/host
-    URL "https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2"
+    URL "${protobufutil_SOURCE_DIR}/tarballs/protobuf-2.5.0.tar.bz2"
     URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
     CONFIGURE_COMMAND ../protoc/configure --prefix=${PREFIX}/host --enable-static
 )
@@ -95,7 +95,7 @@ ExternalProject_add(
 ExternalProject_add(
     protobuf
     PREFIX ${PREFIX}
-    URL "https://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2"
+    URL "${protobufutil_SOURCE_DIR}/tarballs/protobuf-2.5.0.tar.bz2"
     URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
     CONFIGURE_COMMAND ../protobuf/configure --prefix=${PREFIX} --enable-static --with-protoc=../../host/bin/protoc ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
     DEPENDS protoc
