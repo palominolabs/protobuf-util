@@ -1,10 +1,10 @@
-#include "message_stream.h"
+#include "protobufutil/message_stream.h"
 
 #include <arpa/inet.h>
 
 #include "glog/logging.h"
 
-#include "string_value.h"
+#include "protobufutil/string_value.h"
 
 namespace palominolabs {
 namespace protobufutil {

@@ -1,12 +1,12 @@
-#include "byte_stream.h"
+#include "protobufutil/byte_stream.h"
 
 #include <errno.h>
 #include <unistd.h>
 
 #include "glog/logging.h"
 
-#include "reader_writer.h"
-#include "string_value.h"
+#include "protobufutil/reader_writer.h"
+#include "protobufutil/string_value.h"
 
 namespace palominolabs {
 namespace protobufutil {

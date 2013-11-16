@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "string_value.h"
+#include "protobufutil/string_value.h"
 
 namespace palominolabs {
 namespace protobufutil {

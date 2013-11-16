@@ -4,9 +4,9 @@
 #include "google/protobuf/descriptor.pb.h"
 #include "gtest/gtest.h"
 
-#include "common.h"
-#include "message_stream.h"
-#include "string_value.h"
+#include "protobufutil/common.h"
+#include "protobufutil/message_stream.h"
+#include "protobufutil/string_value.h"
 
 namespace palominolabs {
 namespace protobufutil {

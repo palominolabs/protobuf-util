@@ -1,4 +1,4 @@
-#include "string_value.h"
+#include "protobufutil/string_value.h"
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -7,7 +7,7 @@
 
 #include "glog/logging.h"
 
-#include "reader_writer.h"
+#include "protobufutil/reader_writer.h"
 
 namespace palominolabs {
 namespace protobufutil {
