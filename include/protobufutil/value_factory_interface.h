@@ -1,5 +1,5 @@
-#ifndef PROTOBUFUTIL_VALUE_FACTORY_H_
-#define PROTOBUFUTIL_VALUE_FACTORY_H_
+#ifndef PROTOBUFUTIL_VALUE_FACTORY_INTERFACE_H_
+#define PROTOBUFUTIL_VALUE_FACTORY_INTERFACE_H_
 
 #include "common.h"
 #include "value_interface.h"
@@ -16,4 +16,4 @@ class ValueFactoryInterface {
 } // namespace protobufutil
 } // namespace palominolabs
 
-#endif  // PROTOBUFUTIL_VALUE_FACTORY_H_
+#endif  // PROTOBUFUTIL_VALUE_FACTORY_INTERFACE_H_
