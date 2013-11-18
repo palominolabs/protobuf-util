@@ -24,7 +24,7 @@ else(APPLE)
     set(PTHREAD_FLAG "-pthread")
 endif(APPLE)
 
-set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter ${PTHREAD_FLAG}")
+set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter ${PTHREAD_FLAG} -DGTEST_USE_OWN_TR1_TUPLE=1")
 
 include(ExternalProject)
 set(EXTERNAL_PROJECTS gflags glog gmock gtest openssl protobuf)
@@ -44,6 +44,7 @@ ExternalProject_add(
     PREFIX ${PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/glog-0.3.3.tar.gz"
     URL_MD5 "a6fd2c22f8996846e34c763422717c18"
+    PATCH_COMMAND patch -p0 --input=../../../patches/glog-build-on-mavericks.diff
     CONFIGURE_COMMAND ../glog/configure --prefix=${PREFIX} --with-gflags=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
     DEPENDS gflags
 )
