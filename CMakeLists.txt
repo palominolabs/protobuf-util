@@ -56,7 +56,7 @@ ExternalProject_add(
     URL_MD5 "4577b49f2973c90bf9ba69aa8166b786"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND ${CMAKE_CXX_COMPILER} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gtest -I../gtest/include -c ../gtest/src/gtest-all.cc && ar -rv libgtest.a gtest-all.o
+    BUILD_COMMAND ${CMAKE_CXX_COMPILER} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gtest -I../gtest/include -c ../gtest/src/gtest-all.cc && ar -rv libgtest.a gtest-all.o && ranlib libgtest.a
     INSTALL_COMMAND ""
 )
 
@@ -67,7 +67,7 @@ ExternalProject_add(
     URL_MD5 "f547f47321ca88d3965ca2efdcc2a3c1"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND ${CMAKE_CXX_COMPILER} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gmock -I../gmock/include -I../gtest -I../gtest/include -c ../gmock/src/gmock-all.cc && ar -rv libgmock.a gmock-all.o
+    BUILD_COMMAND ${CMAKE_CXX_COMPILER} -DGTEST_USE_OWN_TR1_TUPLE=1 -I../gmock -I../gmock/include -I../gtest -I../gtest/include -c ../gmock/src/gmock-all.cc && ar -rv libgmock.a gmock-all.o && ranlib libgmock.a
     INSTALL_COMMAND ""
     DEPENDS gtest
 )
@@ -79,7 +79,8 @@ ExternalProject_add(
     URL_MD5 "66bf6f10f060d561929de96f9dfe5b8c"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${PREFIX}
-    BUILD_COMMAND make ${CHILD_MAKE_FLAGS}
+    BUILD_COMMAND touch apps/openssl && touch openssl.pc && make ${CHILD_MAKE_FLAGS} build_libs libssl.pc libcrypto.pc
+    INSTALL_COMMAND make install_sw
 )
 
 # The protobuf build requires the existence of a protoc binary that can be
