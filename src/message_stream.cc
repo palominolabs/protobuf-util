@@ -71,7 +71,7 @@ bool MessageStream::ReadMessage(::google::protobuf::Message *message, ValueInter
 }
 
 bool MessageStream::WriteMessage(const ::google::protobuf::Message &message,
-        const std::string& value) {
+        const OutgoingValueInterface& value) {
     // First we need to write the magic 'F'
     if (!byte_stream_->Write("F", 1)) {
         LOG(WARNING) << "Failed to write magic value";
@@ -103,7 +103,7 @@ bool MessageStream::WriteMessage(const ::google::protobuf::Message &message,
 
     // And finally the value if any
     if (value.size()) {
-        if (!byte_stream_->Write(value.data(), value.size())) {
+        if (!byte_stream_->WriteValue(value)) {
             LOG(WARNING) << "Failed to write value";
             return false;
         }

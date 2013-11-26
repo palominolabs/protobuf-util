@@ -44,6 +44,14 @@ class ArrayByteStream : public ByteStreamInterface {
         return new StringValue(value);
     }
 
+    bool WriteValue(const OutgoingValueInterface &value) {
+        std::string s;
+        if (!value.ToString(&s)) {
+            return false;
+        }
+        return Write(s.data(), s.size());
+    }
+
     private:
     const void *input_data_;
     void *output_data_;
@@ -107,7 +115,7 @@ TEST_F(MessageStreamTest, WriteMessageSendsCorrectDataForEmptyValue) {
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
     MessageStream message_stream(byte_stream);
 
-    ASSERT_TRUE(message_stream.WriteMessage(message_, ""));
+    ASSERT_TRUE(message_stream.WriteMessage(message_, OutgoingStringValue("")));
 
     EXPECT_EQ('F', buffer[0]) << "Incorrect magic value";
     EXPECT_EQ(0U, *(uint32_t*)(buffer + 1)) << "Wrong message length";
@@ -122,7 +130,7 @@ TEST_F(MessageStreamTest, WriteMessageSendsCorrectDataForNonemptyValue) {
 
     std::string message_value = "What";
 
-    ASSERT_TRUE(message_stream.WriteMessage(message_, message_value));
+    ASSERT_TRUE(message_stream.WriteMessage(message_, OutgoingStringValue(message_value)));
 
     EXPECT_EQ('F', buffer[0]) << "Incorrect magic value";
     EXPECT_EQ(0U, *(uint32_t*)(buffer + 1)) << "Wrong message length";

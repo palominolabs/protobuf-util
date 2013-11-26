@@ -4,6 +4,7 @@
 #include "openssl/ssl.h"
 
 #include "common.h"
+#include "outgoing_value.h"
 #include "value_factory_interface.h"
 #include "value_interface.h"
 
@@ -16,6 +17,7 @@ class ByteStreamInterface {
     virtual bool Read(void *buf, size_t n) = 0;
     virtual bool Write(const void *buf, size_t n) = 0;
     virtual ValueInterface *ReadValue(size_t n) = 0;
+    virtual bool WriteValue(const OutgoingValueInterface &value) = 0;
 };
 
 class PlainByteStream : public ByteStreamInterface {
@@ -24,6 +26,7 @@ class PlainByteStream : public ByteStreamInterface {
     bool Read(void *buf, size_t n);
     bool Write(const void *buf, size_t n);
     ValueInterface *ReadValue(size_t n);
+    bool WriteValue(const OutgoingValueInterface &value);
 
     private:
     int fd_;
@@ -38,6 +41,7 @@ class SslByteStream : public ByteStreamInterface {
     bool Read(void *buf, size_t n);
     bool Write(const void *buf, size_t n);
     ValueInterface *ReadValue(size_t n);
+    bool WriteValue(const OutgoingValueInterface &value);
 
     private:
     SSL *ssl_;
