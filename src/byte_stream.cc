@@ -5,13 +5,14 @@
 
 #include "glog/logging.h"
 
+#include "protobufutil/incoming_value.h"
+#include "protobufutil/outgoing_value.h"
 #include "protobufutil/reader_writer.h"
-#include "protobufutil/string_value.h"
 
 namespace palominolabs {
 namespace protobufutil {
 
-PlainByteStream::PlainByteStream(int fd, ValueFactoryInterface &value_factory)
+PlainByteStream::PlainByteStream(int fd, IncomingValueFactoryInterface &value_factory)
     : fd_(fd), value_factory_(value_factory) {}
 
 bool PlainByteStream::Read(void *buf, size_t n) {
@@ -24,7 +25,7 @@ bool PlainByteStream::Write(const void *buf, size_t n) {
     return reader_writer.Write(buf, n);
 }
 
-ValueInterface *PlainByteStream::ReadValue(size_t n) {
+IncomingValueInterface *PlainByteStream::ReadValue(size_t n) {
     return value_factory_.NewValue(fd_, n);
 }
 
@@ -62,9 +63,9 @@ bool SslByteStream::Write(const void *buf, size_t n) {
     return true;
 }
 
-ValueInterface *SslByteStream::ReadValue(size_t n) {
+IncomingValueInterface *SslByteStream::ReadValue(size_t n) {
     // We can't use splice since we're using SSL here--instead we fall back on
-    // just copying the value into a StringValue object.
+    // just copying the value into a IncomingStringValue object.
     char *buf = new char[n];
     if (!Read(buf, n)) {
         delete[] buf;
@@ -72,7 +73,7 @@ ValueInterface *SslByteStream::ReadValue(size_t n) {
     }
     std::string value(buf, n);
     delete[] buf;
-    return new StringValue(value);
+    return new IncomingStringValue(value);
 }
 
 bool SslByteStream::WriteValue(const OutgoingValueInterface &value) {

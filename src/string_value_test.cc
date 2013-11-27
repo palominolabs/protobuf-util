@@ -4,15 +4,15 @@
 
 #include <string>
 
+#include "protobufutil/incoming_value.h"
 #include "protobufutil/outgoing_value.h"
-#include "protobufutil/string_value.h"
 
 namespace palominolabs {
 namespace protobufutil {
 
 TEST(StringValueTest, TransferToFileWorks) {
-    // Write StringValue into a pipe
-    StringValue value("a");
+    // Write IncomingStringValue into a pipe
+    IncomingStringValue value("a");
     int output_pipe[2];
     ASSERT_EQ(0, pipe(output_pipe));
     ASSERT_TRUE(value.TransferToFile(output_pipe[1]));
@@ -27,22 +27,22 @@ TEST(StringValueTest, TransferToFileWorks) {
 }
 
 TEST(StringValueTest, ToStringWorks) {
-    StringValue value("a");
+    IncomingStringValue value("a");
     std::string result;
     ASSERT_TRUE(value.ToString(&result));
     ASSERT_EQ("a", result);
 }
 
 TEST(StringValueTest, ToStringDepletesObject) {
-    StringValue value("a");
+    IncomingStringValue value("a");
     std::string result;
     ASSERT_TRUE(value.ToString(&result));
     ASSERT_FALSE(value.ToString(&result));
 }
 
 TEST(StringValueTest, TransferToFileDepletesObject) {
-    // Write StringValue into a pipe
-    StringValue value("a");
+    // Write IncomingStringValue into a pipe
+    IncomingStringValue value("a");
     int output_pipe[2];
     ASSERT_EQ(0, pipe(output_pipe));
     ASSERT_TRUE(value.TransferToFile(output_pipe[1]));
@@ -56,7 +56,7 @@ TEST(StringValueTest, TransferToFileDepletesObject) {
 }
 
 TEST(StringValueTest, ConsumeDepletesObject) {
-    StringValue value("a");
+    IncomingStringValue value("a");
     value.Consume();
     std::string result;
     ASSERT_FALSE(value.ToString(&result));

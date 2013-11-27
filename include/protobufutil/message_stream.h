@@ -7,8 +7,7 @@
 
 #include "byte_stream.h"
 #include "common.h"
-#include "value_factory_interface.h"
-#include "value_interface.h"
+#include "incoming_value.h"
 
 namespace palominolabs {
 namespace protobufutil {
@@ -16,7 +15,8 @@ namespace protobufutil {
 class MessageStreamInterface {
     public:
     virtual ~MessageStreamInterface() {}
-    virtual bool ReadMessage(::google::protobuf::Message *message, ValueInterface** value) = 0;
+    virtual bool ReadMessage(::google::protobuf::Message *message,
+        IncomingValueInterface** value) = 0;
     virtual bool WriteMessage(const ::google::protobuf::Message &message,
         const OutgoingValueInterface& value) = 0;
 };
@@ -25,7 +25,7 @@ class MessageStream : public MessageStreamInterface {
     public:
     explicit MessageStream(ByteStreamInterface *byte_stream);
     ~MessageStream();
-    bool ReadMessage(::google::protobuf::Message *message, ValueInterface** value);
+    bool ReadMessage(::google::protobuf::Message *message, IncomingValueInterface** value);
     bool WriteMessage(const ::google::protobuf::Message &message,
         const OutgoingValueInterface& value);
 
@@ -37,7 +37,8 @@ class MessageStream : public MessageStreamInterface {
 class MockMessageStream : public MessageStreamInterface {
     public:
     MockMessageStream() {}
-    MOCK_METHOD2(ReadMessage, bool(::google::protobuf::Message *message, ValueInterface** value));
+    MOCK_METHOD2(ReadMessage, bool(::google::protobuf::Message *message,
+        IncomingValueInterface** value));
     MOCK_METHOD2(WriteMessage, bool(const ::google::protobuf::Message &message,
         const OutgoingValueInterface& value));
     MOCK_METHOD0(BytesRead, int64_t());
@@ -52,12 +53,12 @@ class MessageStreamFactoryInterface {
 
 class MessageStreamFactory : public MessageStreamFactoryInterface {
     public:
-    MessageStreamFactory(SSL_CTX *ssl_context, ValueFactoryInterface &value_factory);
+    MessageStreamFactory(SSL_CTX *ssl_context, IncomingValueFactoryInterface &value_factory);
     bool NewMessageStream(int fd, bool use_ssl, MessageStreamInterface **message_stream);
 
     private:
     SSL_CTX *ssl_context_;
-    ValueFactoryInterface &value_factory_;
+    IncomingValueFactoryInterface &value_factory_;
     DISALLOW_COPY_AND_ASSIGN(MessageStreamFactory);
 };
 

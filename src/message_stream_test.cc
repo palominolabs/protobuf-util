@@ -5,8 +5,9 @@
 #include "gtest/gtest.h"
 
 #include "protobufutil/common.h"
+#include "protobufutil/incoming_value.h"
 #include "protobufutil/message_stream.h"
-#include "protobufutil/string_value.h"
+#include "protobufutil/outgoing_value.h"
 
 namespace palominolabs {
 namespace protobufutil {
@@ -33,7 +34,7 @@ class ArrayByteStream : public ByteStreamInterface {
         return true;
     }
 
-    ValueInterface *ReadValue(size_t n) {
+    IncomingValueInterface *ReadValue(size_t n) {
         char *buf = new char[n];
         if (!Read(buf, n)) {
             delete[] buf;
@@ -41,7 +42,7 @@ class ArrayByteStream : public ByteStreamInterface {
         }
         std::string value(buf, n);
         delete[] buf;
-        return new StringValue(value);
+        return new IncomingStringValue(value);
     }
 
     bool WriteValue(const OutgoingValueInterface &value) {
@@ -74,7 +75,7 @@ TEST_F(MessageStreamTest, ReadMessageReturnsFalseOnInvalidMagic) {
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
     MessageStream message_stream(byte_stream);
 
-    ValueInterface* value;
+    IncomingValueInterface* value;
     ASSERT_FALSE(message_stream.ReadMessage(&message_, &value));
 }
 
@@ -84,7 +85,7 @@ TEST_F(MessageStreamTest, ReadMessageParsesFrameWithEmptyValue) {
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
     MessageStream message_stream(byte_stream);
 
-    ValueInterface* value = NULL;
+    IncomingValueInterface* value = NULL;
     ASSERT_TRUE(message_stream.ReadMessage(&message_, &value));
 
     ASSERT_TRUE(value != NULL);
@@ -98,9 +99,9 @@ TEST_F(MessageStreamTest, ReadMessageParsesFrameWithNonemptyValue) {
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
     MessageStream message_stream(byte_stream);
 
-    ValueInterface* value = NULL;
+    IncomingValueInterface* value = NULL;
     ASSERT_TRUE(message_stream.ReadMessage(&message_, &value));
-    ASSERT_NE(value, (ValueInterface*)NULL);
+    ASSERT_NE(value, (IncomingValueInterface*)NULL);
 
     std::string value_string;
     ASSERT_TRUE(value->ToString(&value_string));
@@ -146,10 +147,10 @@ TEST_F(MessageStreamTest, ReadMessageWithEmptyValueResultsInValidNonNullValue) {
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
     MessageStream message_stream(byte_stream);
 
-    ValueInterface* value = NULL;
+    IncomingValueInterface* value = NULL;
     ASSERT_TRUE(message_stream.ReadMessage(&message_, &value));
 
-    ASSERT_NE((ValueInterface*)NULL, value);
+    ASSERT_NE((IncomingValueInterface*)NULL, value);
 
     EXPECT_EQ((size_t) 0, value->size());
 
