@@ -51,6 +51,10 @@ bool SslByteStream::Read(void *buf, size_t n) {
 }
 
 bool SslByteStream::Write(const void *buf, size_t n) {
+    if (n == 0) {
+        // It's not clear whether SSL_write can handle a write of 0 bytes
+        return true;
+    }
     if (SSL_write(ssl_, buf, n) != static_cast<int>(n)) {
         LOG(WARNING) << "Failed to write " << n << " bytes over SSL connection";
         return false;

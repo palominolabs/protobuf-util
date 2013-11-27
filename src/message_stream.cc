@@ -102,11 +102,9 @@ bool MessageStream::WriteMessage(const ::google::protobuf::Message &message,
     }
 
     // And finally the value if any
-    if (value.size()) {
-        if (!byte_stream_->WriteValue(value)) {
-            LOG(WARNING) << "Failed to write value";
-            return false;
-        }
+    if (!byte_stream_->WriteValue(value)) {
+        LOG(WARNING) << "Failed to write value";
+        return false;
     }
 
     return true;
