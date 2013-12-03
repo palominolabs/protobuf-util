@@ -34,6 +34,7 @@ class PlainByteStream : public ByteStreamInterface {
 class SslByteStream : public ByteStreamInterface {
     public:
     explicit SslByteStream(SSL *ssl);
+    virtual ~SslByteStream();
     bool Read(void *buf, size_t n);
     bool Write(const void *buf, size_t n);
     ValueInterface *ReadValue(size_t n);
