@@ -30,6 +30,10 @@ ValueInterface *PlainByteStream::ReadValue(size_t n) {
 
 SslByteStream::SslByteStream(SSL *ssl) : ssl_(ssl) {}
 
+SslByteStream::~SslByteStream() {
+    SSL_free(ssl_);
+}
+
 bool SslByteStream::Read(void *buf, size_t n) {
     if (n == 0) {
         // SSL_read with 0 bytes causes openssl to get really upset in mysterious ways
