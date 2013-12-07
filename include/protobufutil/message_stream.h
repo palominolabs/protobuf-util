@@ -18,7 +18,7 @@ class MessageStreamInterface {
     virtual ~MessageStreamInterface() {}
     virtual bool ReadMessage(::google::protobuf::Message *message, ValueInterface** value) = 0;
     virtual bool WriteMessage(const ::google::protobuf::Message &message,
-        const std::string& value) = 0;
+        const OutgoingValueInterface& value) = 0;
 };
 
 class MessageStream : public MessageStreamInterface {
@@ -26,7 +26,8 @@ class MessageStream : public MessageStreamInterface {
     explicit MessageStream(ByteStreamInterface *byte_stream);
     ~MessageStream();
     bool ReadMessage(::google::protobuf::Message *message, ValueInterface** value);
-    bool WriteMessage(const ::google::protobuf::Message &message, const std::string& value);
+    bool WriteMessage(const ::google::protobuf::Message &message,
+        const OutgoingValueInterface& value);
 
     private:
     ByteStreamInterface *byte_stream_;
@@ -38,7 +39,7 @@ class MockMessageStream : public MessageStreamInterface {
     MockMessageStream() {}
     MOCK_METHOD2(ReadMessage, bool(::google::protobuf::Message *message, ValueInterface** value));
     MOCK_METHOD2(WriteMessage, bool(const ::google::protobuf::Message &message,
-        const std::string& value));
+        const OutgoingValueInterface& value));
     MOCK_METHOD0(BytesRead, int64_t());
     MOCK_METHOD0(BytesWritten, int64_t());
 };

@@ -28,6 +28,10 @@ ValueInterface *PlainByteStream::ReadValue(size_t n) {
     return value_factory_.NewValue(fd_, n);
 }
 
+bool PlainByteStream::WriteValue(const OutgoingValueInterface &value) {
+    return value.TransferToSocket(fd_);
+}
+
 SslByteStream::SslByteStream(SSL *ssl) : ssl_(ssl) {}
 
 SslByteStream::~SslByteStream() {
@@ -65,6 +69,14 @@ ValueInterface *SslByteStream::ReadValue(size_t n) {
     std::string value(buf, n);
     delete[] buf;
     return new StringValue(value);
+}
+
+bool SslByteStream::WriteValue(const OutgoingValueInterface &value) {
+    std::string s;
+    if (!value.ToString(&s)) {
+        return false;
+    }
+    return Write(s.data(), s.size());
 }
 
 } // namespace protobufutil
