@@ -30,6 +30,8 @@ class MessageStream : public MessageStreamInterface {
         const OutgoingValueInterface& value);
 
     private:
+    bool ReadHeader(uint32_t *message_size, uint32_t *value_size);
+    bool WriteHeader(uint32_t message_size, uint32_t value_size);
     ByteStreamInterface *byte_stream_;
     DISALLOW_COPY_AND_ASSIGN(MessageStream);
 };

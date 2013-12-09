@@ -1,6 +1,7 @@
 #include "protobufutil/message_stream.h"
 
 #include <arpa/inet.h>
+#include <string.h>
 
 #include "glog/logging.h"
 
@@ -19,35 +20,13 @@ MessageStream::~MessageStream() {
 
 bool MessageStream::ReadMessage(::google::protobuf::Message *message,
         IncomingValueInterface** value) {
-    char magic;
-    if (!byte_stream_->Read(&magic, sizeof(magic))) {
+    // First the header
+    uint32_t message_size, value_size;
+    if (!ReadHeader(&message_size, &value_size)) {
         return false;
     }
 
-    VLOG(2) << "Read magic byte " << magic;
-    if (magic != 'F') {
-        LOG(WARNING) << "Received invalid magic value " << magic;
-        return false;
-    }
-
-    // Next read the 4 byte message size
-    int32_t message_size;
-    if (!byte_stream_->Read(&message_size, sizeof(message_size))) {
-        LOG(WARNING) << "Unable to read message length";
-        return false;
-    }
-    message_size = ntohl(message_size);
-    VLOG(2) << "Read message size " << message_size;
-
-    // Finally the 4 byte value size
-    uint32_t value_size;
-    if (!byte_stream_->Read(&value_size, sizeof(value_size))) {
-        LOG(WARNING) << "Unable to read value length";
-        return false;
-    }
-    value_size = ntohl(value_size);
-    VLOG(2) << "Read value size " << value_size;
-
+    // Now the message
     char *message_bytes = new char[message_size];
     if (!byte_stream_->Read(message_bytes, message_size)) {
         LOG(WARNING) << "Unable to read message";
@@ -74,21 +53,9 @@ bool MessageStream::ReadMessage(::google::protobuf::Message *message,
 
 bool MessageStream::WriteMessage(const ::google::protobuf::Message &message,
         const OutgoingValueInterface& value) {
-    // First we need to write the magic 'F'
-    if (!byte_stream_->Write("F", 1)) {
-        LOG(WARNING) << "Failed to write magic value";
-        return false;
-    }
-
-    // The the message and value lengths
-    uint32_t message_size = htonl(message.ByteSize());
-    if (!byte_stream_->Write(&message_size, sizeof(message_size))) {
-        LOG(WARNING) << "Failed to write message size";
-        return false;
-    }
-    uint32_t value_size = htonl(value.size());
-    if (!byte_stream_->Write(&value_size, sizeof(value_size))) {
-        LOG(WARNING) << "Failed to write value size";
+    // First the header
+    if (!WriteHeader(message.ByteSize(), value.size())) {
+        LOG(WARNING) << "Failed to write header";
         return false;
     }
 
@@ -146,6 +113,35 @@ bool MessageStreamFactory::NewMessageStream(int fd, bool use_ssl,
     }
 
     return true;
+}
+
+bool MessageStream::ReadHeader(uint32_t *message_size, uint32_t *value_size) {
+    char header[9];
+    if (!byte_stream_->Read(header, sizeof(header))) {
+        return false;
+    }
+
+    if (header[0] != 'F') {
+        LOG(WARNING) << "Received invalid magic value " << header[0];
+        return false;
+    }
+
+    memcpy(reinterpret_cast<char *>(message_size), header + 1, sizeof(*message_size));
+    memcpy(reinterpret_cast<char *>(value_size), header + 5, sizeof(*value_size));
+    *message_size = ntohl(*message_size);
+    *value_size = ntohl(*value_size);
+
+    return true;
+}
+
+bool MessageStream::WriteHeader(uint32_t message_size, uint32_t value_size) {
+    char header[9];
+    header[0] = 'F';
+    message_size = htonl(message_size);
+    value_size = htonl(value_size);
+    memcpy(header + 1, reinterpret_cast<char *>(&message_size), sizeof(message_size));
+    memcpy(header + 5, reinterpret_cast<char *>(&value_size), sizeof(value_size));
+    return byte_stream_->Write(header, sizeof(header));
 }
 
 }  // namespace protobufutil
