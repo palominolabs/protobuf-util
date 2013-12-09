@@ -1,5 +1,5 @@
-#ifndef PROTOBUFUTIL_VALUE_INTERFACE_H_
-#define PROTOBUFUTIL_VALUE_INTERFACE_H_
+#ifndef PROTOBUFUTIL_INCOMING_VALUE_H_
+#define PROTOBUFUTIL_INCOMING_VALUE_H_
 
 #include <string>
 
@@ -11,13 +11,13 @@ namespace palominolabs {
 namespace protobufutil {
 
 /*
- * ValueInterface represents a byte-array value arriving in a PUT request. This
- * can take the form of either a string in memory or a socket file descriptor
- * from which we can read a specified number of bytes.
+ * IncomingValueInterface represents a byte-array value arriving in a PUT
+ * request. This can take the form of either a string in memory or a socket
+ * file descriptor from which we can read a specified number of bytes.
  */
-class ValueInterface {
+class IncomingValueInterface {
     public:
-    virtual ~ValueInterface() {}
+    virtual ~IncomingValueInterface() {}
 
     virtual size_t size() = 0;
 
@@ -45,16 +45,41 @@ class ValueInterface {
     virtual void Consume() = 0;
 };
 
-class MockValue : public ValueInterface {
+class MockIncomingValue : public IncomingValueInterface {
     public:
-    MockValue() {}
+    MockIncomingValue() {}
     MOCK_METHOD0(size, size_t());
     MOCK_METHOD1(TransferToFile, bool(int fd));
     MOCK_METHOD1(ToString, bool(std::string *result));
     MOCK_METHOD0(Consume, void());
 };
 
+/*
+ * IncomingStringValue represents a value stored internally as a plain string.
+ * It's preferable to use SpliceableValue whenever possible because of its
+ * performance benefits.
+ */
+class IncomingStringValue : public IncomingValueInterface {
+    public:
+    explicit IncomingStringValue(const std::string &s);
+    size_t size();
+    bool TransferToFile(int fd);
+    bool ToString(std::string *result);
+    void Consume();
+
+    private:
+    const std::string s_;
+    bool defunct_;
+    DISALLOW_COPY_AND_ASSIGN(IncomingStringValue);
+};
+
+class IncomingValueFactoryInterface {
+    public:
+    virtual ~IncomingValueFactoryInterface() {}
+    virtual IncomingValueInterface *NewValue(int fd, size_t n) = 0;
+};
+
 } // namespace protobufutil
 } // namespace palominolabs
 
-#endif  // PROTOBUFUTIL_VALUE_INTERFACE_H_
+#endif  // PROTOBUFUTIL_INCOMING_VALUE_H_

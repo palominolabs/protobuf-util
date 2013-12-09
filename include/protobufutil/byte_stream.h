@@ -4,9 +4,8 @@
 #include "openssl/ssl.h"
 
 #include "common.h"
+#include "incoming_value.h"
 #include "outgoing_value.h"
-#include "value_factory_interface.h"
-#include "value_interface.h"
 
 namespace palominolabs {
 namespace protobufutil {
@@ -16,21 +15,21 @@ class ByteStreamInterface {
     virtual ~ByteStreamInterface() {}
     virtual bool Read(void *buf, size_t n) = 0;
     virtual bool Write(const void *buf, size_t n) = 0;
-    virtual ValueInterface *ReadValue(size_t n) = 0;
+    virtual IncomingValueInterface *ReadValue(size_t n) = 0;
     virtual bool WriteValue(const OutgoingValueInterface &value) = 0;
 };
 
 class PlainByteStream : public ByteStreamInterface {
     public:
-    PlainByteStream(int fd, ValueFactoryInterface &value_factory);
+    PlainByteStream(int fd, IncomingValueFactoryInterface &value_factory);
     bool Read(void *buf, size_t n);
     bool Write(const void *buf, size_t n);
-    ValueInterface *ReadValue(size_t n);
+    IncomingValueInterface *ReadValue(size_t n);
     bool WriteValue(const OutgoingValueInterface &value);
 
     private:
     int fd_;
-    ValueFactoryInterface &value_factory_;
+    IncomingValueFactoryInterface &value_factory_;
     DISALLOW_COPY_AND_ASSIGN(PlainByteStream);
 };
 
@@ -40,7 +39,7 @@ class SslByteStream : public ByteStreamInterface {
     virtual ~SslByteStream();
     bool Read(void *buf, size_t n);
     bool Write(const void *buf, size_t n);
-    ValueInterface *ReadValue(size_t n);
+    IncomingValueInterface *ReadValue(size_t n);
     bool WriteValue(const OutgoingValueInterface &value);
 
     private:

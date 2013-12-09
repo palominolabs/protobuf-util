@@ -4,7 +4,8 @@
 
 #include "glog/logging.h"
 
-#include "protobufutil/string_value.h"
+#include "protobufutil/incoming_value.h"
+#include "protobufutil/outgoing_value.h"
 
 namespace palominolabs {
 namespace protobufutil {
@@ -16,7 +17,8 @@ MessageStream::~MessageStream() {
     delete byte_stream_;
 }
 
-bool MessageStream::ReadMessage(::google::protobuf::Message *message, ValueInterface** value) {
+bool MessageStream::ReadMessage(::google::protobuf::Message *message,
+        IncomingValueInterface** value) {
     char magic;
     if (!byte_stream_->Read(&magic, sizeof(magic))) {
         return false;
@@ -102,18 +104,16 @@ bool MessageStream::WriteMessage(const ::google::protobuf::Message &message,
     }
 
     // And finally the value if any
-    if (value.size()) {
-        if (!byte_stream_->WriteValue(value)) {
-            LOG(WARNING) << "Failed to write value";
-            return false;
-        }
+    if (!byte_stream_->WriteValue(value)) {
+        LOG(WARNING) << "Failed to write value";
+        return false;
     }
 
     return true;
 }
 
 MessageStreamFactory::MessageStreamFactory(SSL_CTX *ssl_context,
-        ValueFactoryInterface &value_factory)
+        IncomingValueFactoryInterface &value_factory)
     : ssl_context_(ssl_context), value_factory_(value_factory) {}
 
 bool MessageStreamFactory::NewMessageStream(int fd, bool use_ssl,

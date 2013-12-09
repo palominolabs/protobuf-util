@@ -112,9 +112,10 @@ include_directories(
 
 add_library(protobufutil
     src/byte_stream.cc
+    src/incoming_string_value.cc
     src/message_stream.cc
+    src/outgoing_string_value.cc
     src/reader_writer.cc
-    src/string_value.cc
 )
 
 add_dependencies(protobufutil ${EXTERNAL_PROJECTS})
