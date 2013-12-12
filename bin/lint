@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+find ./src ./include \( -name "*.h" -o -name "*.cc" \) -type f | grep -v pb | xargs python $DIR/cpplint.py --root=src --header-guard-prefix=PROTOBUFUTIL --filter=-legal/copyright,-build/include,-whitespace/comments,-readability/streams,-runtime/references,-readability/casting,-runtime/arrays,-runtime/printf
