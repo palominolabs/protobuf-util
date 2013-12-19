@@ -14,8 +14,14 @@ namespace protobufutil {
 
 class MessageStreamInterface {
     public:
+    typedef enum {
+        MessageStreamReadStatus_SUCCESS,
+        MessageStreamReadStatus_INTERNAL_ERROR,
+        MessageStreamReadStatus_TOO_LARGE
+    } MessageStreamReadStatus;
+
     virtual ~MessageStreamInterface() {}
-    virtual bool ReadMessage(::google::protobuf::Message *message,
+    virtual MessageStreamReadStatus ReadMessage(::google::protobuf::Message *message,
         IncomingValueInterface** value) = 0;
     virtual bool WriteMessage(const ::google::protobuf::Message &message,
         const OutgoingValueInterface& value) = 0;
@@ -23,15 +29,17 @@ class MessageStreamInterface {
 
 class MessageStream : public MessageStreamInterface {
     public:
-    explicit MessageStream(ByteStreamInterface *byte_stream);
+    explicit MessageStream(uint32_t max_message_size_bytes, ByteStreamInterface *byte_stream);
     ~MessageStream();
-    bool ReadMessage(::google::protobuf::Message *message, IncomingValueInterface** value);
+    MessageStreamReadStatus ReadMessage(::google::protobuf::Message *message,
+        IncomingValueInterface** value);
     bool WriteMessage(const ::google::protobuf::Message &message,
         const OutgoingValueInterface& value);
 
     private:
     bool ReadHeader(uint32_t *message_size, uint32_t *value_size);
     bool WriteHeader(uint32_t message_size, uint32_t value_size);
+    uint32_t max_message_size_bytes_;
     ByteStreamInterface *byte_stream_;
     DISALLOW_COPY_AND_ASSIGN(MessageStream);
 };
@@ -39,7 +47,7 @@ class MessageStream : public MessageStreamInterface {
 class MockMessageStream : public MessageStreamInterface {
     public:
     MockMessageStream() {}
-    MOCK_METHOD2(ReadMessage, bool(::google::protobuf::Message *message,
+    MOCK_METHOD2(ReadMessage, MessageStreamReadStatus(::google::protobuf::Message *message,
         IncomingValueInterface** value));
     MOCK_METHOD2(WriteMessage, bool(const ::google::protobuf::Message &message,
         const OutgoingValueInterface& value));
@@ -49,14 +57,15 @@ class MockMessageStream : public MessageStreamInterface {
 
 class MessageStreamFactoryInterface {
     public:
-    virtual bool NewMessageStream(int fd, bool use_ssl,
+    virtual bool NewMessageStream(int fd, bool use_ssl, uint32_t max_message_size_bytes,
         MessageStreamInterface **message_stream) = 0;
 };
 
 class MessageStreamFactory : public MessageStreamFactoryInterface {
     public:
     MessageStreamFactory(SSL_CTX *ssl_context, IncomingValueFactoryInterface &value_factory);
-    bool NewMessageStream(int fd, bool use_ssl, MessageStreamInterface **message_stream);
+    bool NewMessageStream(int fd, bool use_ssl, uint32_t max_message_size_bytes,
+        MessageStreamInterface **message_stream);
 
     private:
     SSL_CTX *ssl_context_;
@@ -67,8 +76,9 @@ class MessageStreamFactory : public MessageStreamFactoryInterface {
 class MockMessageStreamFactory : public MessageStreamFactoryInterface {
     public:
     MockMessageStreamFactory() {}
-    MOCK_METHOD3(NewMessageStream,
-        bool(int fd, bool use_ssl, MessageStreamInterface **message_stream));
+    MOCK_METHOD4(NewMessageStream,
+        bool(int fd, bool use_ssl, uint32_t max_message_size_bytes,
+            MessageStreamInterface **message_stream));
 };
 
 }  // namespace protobufutil

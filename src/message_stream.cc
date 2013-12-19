@@ -11,19 +11,26 @@
 namespace palominolabs {
 namespace protobufutil {
 
-MessageStream::MessageStream(ByteStreamInterface *byte_stream)
-    : byte_stream_(byte_stream) {}
+MessageStream::MessageStream(uint32_t max_message_size_bytes, ByteStreamInterface *byte_stream)
+    : max_message_size_bytes_(max_message_size_bytes), byte_stream_(byte_stream) {}
 
 MessageStream::~MessageStream() {
     delete byte_stream_;
 }
 
-bool MessageStream::ReadMessage(::google::protobuf::Message *message,
+MessageStream::MessageStreamReadStatus MessageStream::ReadMessage(
+        ::google::protobuf::Message *message,
         IncomingValueInterface** value) {
     // First the header
     uint32_t message_size, value_size;
     if (!ReadHeader(&message_size, &value_size)) {
-        return false;
+        return MessageStreamReadStatus_INTERNAL_ERROR;
+    }
+
+    // Reject large messages because they will cause huge allocations and other undersirable
+    // behavior
+    if (message_size > max_message_size_bytes_ || value_size > max_message_size_bytes_) {
+        return MessageStreamReadStatus_TOO_LARGE;
     }
 
     // Now the message
@@ -31,13 +38,13 @@ bool MessageStream::ReadMessage(::google::protobuf::Message *message,
     if (!byte_stream_->Read(message_bytes, message_size)) {
         LOG(WARNING) << "Unable to read message";
         delete[] message_bytes;
-        return false;
+        return MessageStreamReadStatus_INTERNAL_ERROR;
     }
 
     if (!message->ParseFromArray(message_bytes, message_size)) {
         LOG(WARNING) << "Failed to parse protobuf message";
         delete[] message_bytes;
-        return false;
+        return MessageStreamReadStatus_INTERNAL_ERROR;
     }
 
     delete[] message_bytes;
@@ -45,10 +52,10 @@ bool MessageStream::ReadMessage(::google::protobuf::Message *message,
     // Now read the value (if any)
     *value = byte_stream_->ReadValue(value_size);
     if (*value == NULL) {
-        return false;
+        return MessageStreamReadStatus_INTERNAL_ERROR;
     }
 
-    return true;
+    return MessageStreamReadStatus_SUCCESS;
 }
 
 bool MessageStream::WriteMessage(const ::google::protobuf::Message &message,
@@ -83,7 +90,7 @@ MessageStreamFactory::MessageStreamFactory(SSL_CTX *ssl_context,
         IncomingValueFactoryInterface &value_factory)
     : ssl_context_(ssl_context), value_factory_(value_factory) {}
 
-bool MessageStreamFactory::NewMessageStream(int fd, bool use_ssl,
+bool MessageStreamFactory::NewMessageStream(int fd, bool use_ssl, uint32_t max_message_size_bytes,
         MessageStreamInterface **message_stream) {
     if (use_ssl) {
         SSL *ssl = SSL_new(ssl_context_);
@@ -107,9 +114,10 @@ bool MessageStreamFactory::NewMessageStream(int fd, bool use_ssl,
             return false;
         }
         LOG(INFO) << "Successfully performed SSL handshake";
-        *message_stream = new MessageStream(new SslByteStream(ssl));
+        *message_stream = new MessageStream(max_message_size_bytes, new SslByteStream(ssl));
     } else {
-        *message_stream = new MessageStream(new PlainByteStream(fd, value_factory_));
+        *message_stream =
+            new MessageStream(max_message_size_bytes, new PlainByteStream(fd, value_factory_));
     }
 
     return true;

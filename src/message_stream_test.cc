@@ -73,20 +73,22 @@ TEST_F(MessageStreamTest, ReadMessageReturnsFalseOnInvalidMagic) {
     uint8_t data[] = {'o', 'o', 'o'};
     uint8_t buffer[1024];
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
-    MessageStream message_stream(byte_stream);
+    MessageStream message_stream(1000, byte_stream);
 
     IncomingValueInterface* value;
-    ASSERT_FALSE(message_stream.ReadMessage(&message_, &value));
+    ASSERT_EQ(MessageStream::MessageStreamReadStatus_INTERNAL_ERROR,
+        message_stream.ReadMessage(&message_, &value));
 }
 
 TEST_F(MessageStreamTest, ReadMessageParsesFrameWithEmptyValue) {
     uint8_t data[] = {'F', 0, 0, 0, 0, 0, 0, 0, 0};
     uint8_t buffer[1024];
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
-    MessageStream message_stream(byte_stream);
+    MessageStream message_stream(1000, byte_stream);
 
     IncomingValueInterface* value = NULL;
-    ASSERT_TRUE(message_stream.ReadMessage(&message_, &value));
+    ASSERT_EQ(MessageStream::MessageStreamReadStatus_SUCCESS,
+        message_stream.ReadMessage(&message_, &value));
 
     ASSERT_TRUE(value != NULL);
 
@@ -97,10 +99,11 @@ TEST_F(MessageStreamTest, ReadMessageParsesFrameWithNonemptyValue) {
     uint8_t data[] = {'F', 0, 0, 0, 0, 0, 0, 0, 3, 'H', 'a', 'i'};
     uint8_t buffer[1024];
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
-    MessageStream message_stream(byte_stream);
+    MessageStream message_stream(1000, byte_stream);
 
     IncomingValueInterface* value = NULL;
-    ASSERT_TRUE(message_stream.ReadMessage(&message_, &value));
+    ASSERT_EQ(MessageStream::MessageStreamReadStatus_SUCCESS,
+        message_stream.ReadMessage(&message_, &value));
     ASSERT_NE(value, (IncomingValueInterface*)NULL);
 
     std::string value_string;
@@ -114,7 +117,7 @@ TEST_F(MessageStreamTest, WriteMessageSendsCorrectDataForEmptyValue) {
     uint8_t data[0];
     uint8_t buffer[1024];
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
-    MessageStream message_stream(byte_stream);
+    MessageStream message_stream(1000, byte_stream);
 
     ASSERT_TRUE(message_stream.WriteMessage(message_, OutgoingStringValue("")));
 
@@ -127,7 +130,7 @@ TEST_F(MessageStreamTest, WriteMessageSendsCorrectDataForNonemptyValue) {
     uint8_t data[0];
     uint8_t buffer[1024] = {0};
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
-    MessageStream message_stream(byte_stream);
+    MessageStream message_stream(1000, byte_stream);
 
     std::string message_value = "What";
 
@@ -145,16 +148,39 @@ TEST_F(MessageStreamTest, ReadMessageWithEmptyValueResultsInValidNonNullValue) {
     uint8_t data[] = {'F', 0, 0, 0, 0, 0, 0, 0, 0};
     uint8_t buffer[1024];
     ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
-    MessageStream message_stream(byte_stream);
+    MessageStream message_stream(1000, byte_stream);
 
     IncomingValueInterface* value = NULL;
-    ASSERT_TRUE(message_stream.ReadMessage(&message_, &value));
+    ASSERT_EQ(MessageStream::MessageStreamReadStatus_SUCCESS,
+        message_stream.ReadMessage(&message_, &value));
 
     ASSERT_NE((IncomingValueInterface*)NULL, value);
 
     EXPECT_EQ((size_t) 0, value->size());
 
     delete value;
+}
+
+TEST_F(MessageStreamTest, ReadMessageFailsIfMessageTooLarge) {
+    uint8_t data[] = {'F', 0, 0, 0, 10, 0, 0, 0, 0};
+    uint8_t buffer[1024];
+    ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
+    MessageStream message_stream(1, byte_stream);
+
+    IncomingValueInterface* value = NULL;
+    ASSERT_EQ(MessageStream::MessageStreamReadStatus_TOO_LARGE,
+        message_stream.ReadMessage(&message_, &value));
+}
+
+TEST_F(MessageStreamTest, ReadMessageFailsIfValueTooLarge) {
+    uint8_t data[] = {'F', 0, 0, 0, 0, 0, 0, 0, 10};
+    uint8_t buffer[1024];
+    ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
+    MessageStream message_stream(1, byte_stream);
+
+    IncomingValueInterface* value = NULL;
+    ASSERT_EQ(MessageStream::MessageStreamReadStatus_TOO_LARGE,
+        message_stream.ReadMessage(&message_, &value));
 }
 
 } // namespace protobufutil

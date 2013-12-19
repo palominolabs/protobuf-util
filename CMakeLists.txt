@@ -24,7 +24,7 @@ else(APPLE)
     endif(${BUILD_FOR_ARM})
 endif(APPLE)
 
-set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-unknown-warning-option -DGTEST_USE_OWN_TR1_TUPLE=1")
+set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-unknown-warning-option -Wno-null-dereference -DGTEST_USE_OWN_TR1_TUPLE=1")
 
 include(ExternalProject)
 set(EXTERNAL_PROJECTS gflags glog gmock gtest openssl protobuf)
