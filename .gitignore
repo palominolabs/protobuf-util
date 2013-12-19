@@ -1,8 +1,8 @@
+# Build outputs
 /gtestresults.xml
 /protobufutil_test
 /libprotobufutil.a
 /vendor/
-*.swp
 
 # CMake artifacts
 CMakeCache.txt
@@ -13,3 +13,8 @@ CMakeScripts
 Debug
 protobufutil.build
 protobufutil.xcodeproj
+
+# IDE cruft
+.idea
+*.iml
+*.swp
