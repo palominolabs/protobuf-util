@@ -27,9 +27,9 @@ MessageStream::MessageStreamReadStatus MessageStream::ReadMessage(
         return MessageStreamReadStatus_INTERNAL_ERROR;
     }
 
-    // Reject large messages because they will cause huge allocations and other undersirable
+    // Reject large messages because they will cause huge allocations and other undesirable
     // behavior
-    if (message_size > max_message_size_bytes_ || value_size > max_message_size_bytes_) {
+    if (message_size > max_message_size_bytes_) {
         return MessageStreamReadStatus_TOO_LARGE;
     }
 

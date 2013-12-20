@@ -172,16 +172,5 @@ TEST_F(MessageStreamTest, ReadMessageFailsIfMessageTooLarge) {
         message_stream.ReadMessage(&message_, &value));
 }
 
-TEST_F(MessageStreamTest, ReadMessageFailsIfValueTooLarge) {
-    uint8_t data[] = {'F', 0, 0, 0, 0, 0, 0, 0, 10};
-    uint8_t buffer[1024];
-    ArrayByteStream* byte_stream = new ArrayByteStream(data, buffer);
-    MessageStream message_stream(1, byte_stream);
-
-    IncomingValueInterface* value = NULL;
-    ASSERT_EQ(MessageStream::MessageStreamReadStatus_TOO_LARGE,
-        message_stream.ReadMessage(&message_, &value));
-}
-
 } // namespace protobufutil
 } // namespace palominolabs
