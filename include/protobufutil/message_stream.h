@@ -59,6 +59,7 @@ class MessageStreamFactoryInterface {
     public:
     virtual bool NewMessageStream(int fd, bool use_ssl, uint32_t max_message_size_bytes,
         MessageStreamInterface **message_stream) = 0;
+    virtual ~MessageStreamFactoryInterface() {}
 };
 
 class MessageStreamFactory : public MessageStreamFactoryInterface {
@@ -66,6 +67,7 @@ class MessageStreamFactory : public MessageStreamFactoryInterface {
     MessageStreamFactory(SSL_CTX *ssl_context, IncomingValueFactoryInterface &value_factory);
     bool NewMessageStream(int fd, bool use_ssl, uint32_t max_message_size_bytes,
         MessageStreamInterface **message_stream);
+    virtual ~MessageStreamFactory() {}
 
     private:
     SSL_CTX *ssl_context_;
@@ -76,6 +78,7 @@ class MessageStreamFactory : public MessageStreamFactoryInterface {
 class MockMessageStreamFactory : public MessageStreamFactoryInterface {
     public:
     MockMessageStreamFactory() {}
+    virtual ~MockMessageStreamFactory() {}
     MOCK_METHOD4(NewMessageStream,
         bool(int fd, bool use_ssl, uint32_t max_message_size_bytes,
             MessageStreamInterface **message_stream));
