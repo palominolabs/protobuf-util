@@ -29,29 +29,29 @@ set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter 
 include(ExternalProject)
 set(EXTERNAL_PROJECTS gflags glog gmock gtest openssl protobuf)
 
-set(PREFIX "${protobufutil_SOURCE_DIR}/vendor")
+set(EXTERNAL_PREFIX "${protobufutil_BINARY_DIR}/vendor")
 
 ExternalProject_add(
     gflags
-    PREFIX ${PREFIX}
+    PREFIX ${EXTERNAL_PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/gflags-2.0-no-svn-files.tar.gz"
     URL_MD5 "9084829124e02a7e6be0f0f824523423"
-    CONFIGURE_COMMAND ../gflags/configure --prefix=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    CONFIGURE_COMMAND ../gflags/configure --prefix=${EXTERNAL_PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
 )
 
 ExternalProject_add(
     glog
-    PREFIX ${PREFIX}
+    PREFIX ${EXTERNAL_PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/glog-0.3.3.tar.gz"
     URL_MD5 "a6fd2c22f8996846e34c763422717c18"
-    PATCH_COMMAND patch -p0 --input=../../../patches/glog-build-on-mavericks.diff
-    CONFIGURE_COMMAND ../glog/configure --prefix=${PREFIX} --with-gflags=${PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    PATCH_COMMAND patch -p0 --input=${protobufutil_SOURCE_DIR}/patches/glog-build-on-mavericks.diff
+    CONFIGURE_COMMAND ../glog/configure --prefix=${EXTERNAL_PREFIX} --with-gflags=${EXTERNAL_PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
     DEPENDS gflags
 )
 
 ExternalProject_add(
     gtest
-    PREFIX ${PREFIX}
+    PREFIX ${EXTERNAL_PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/gtest-1.6.0.zip"
     URL_MD5 "4577b49f2973c90bf9ba69aa8166b786"
     BUILD_IN_SOURCE 1
@@ -62,7 +62,7 @@ ExternalProject_add(
 
 ExternalProject_add(
     gmock
-    PREFIX ${PREFIX}
+    PREFIX ${EXTERNAL_PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/gmock-1.6.0.zip"
     URL_MD5 "f547f47321ca88d3965ca2efdcc2a3c1"
     BUILD_IN_SOURCE 1
@@ -74,11 +74,11 @@ ExternalProject_add(
 
 ExternalProject_add(
     openssl
-    PREFIX ${PREFIX}
+    PREFIX ${EXTERNAL_PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/openssl-1.0.1e.tar.gz"
     URL_MD5 "66bf6f10f060d561929de96f9dfe5b8c"
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${PREFIX}
+    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${EXTERNAL_PREFIX}
     BUILD_COMMAND touch apps/openssl && touch openssl.pc && make ${CHILD_MAKE_FLAGS} build_libs libssl.pc libcrypto.pc
     INSTALL_COMMAND make install_sw
 )
@@ -88,26 +88,26 @@ ExternalProject_add(
 # protobuf once for the host so that we have a suitable copy of protoc.
 ExternalProject_add(
     protoc
-    PREFIX ${PREFIX}/host
+    PREFIX ${EXTERNAL_PREFIX}/host
     URL "${protobufutil_SOURCE_DIR}/tarballs/protobuf-2.5.0.tar.bz2"
     URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
-    CONFIGURE_COMMAND ../protoc/configure --prefix=${PREFIX}/host --enable-static
+    CONFIGURE_COMMAND ../protoc/configure --prefix=${EXTERNAL_PREFIX}/host --enable-static
 )
 
 ExternalProject_add(
     protobuf
-    PREFIX ${PREFIX}
+    PREFIX ${EXTERNAL_PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/protobuf-2.5.0.tar.bz2"
     URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
-    CONFIGURE_COMMAND ../protobuf/configure --prefix=${PREFIX} --enable-static --with-protoc=../../host/bin/protoc ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    CONFIGURE_COMMAND ../protobuf/configure --prefix=${EXTERNAL_PREFIX} --enable-static --with-protoc=../../host/bin/protoc ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
     DEPENDS protoc
 )
 
 include_directories(
     include
-    vendor/include
-    vendor/src/gmock/include
-    vendor/src/gtest/include
+    ${EXTERNAL_PREFIX}/include
+    ${EXTERNAL_PREFIX}/src/gmock/include
+    ${EXTERNAL_PREFIX}/src/gtest/include
 )
 
 add_library(protobufutil
@@ -120,13 +120,13 @@ add_library(protobufutil
 
 add_dependencies(protobufutil ${EXTERNAL_PROJECTS})
 set(LIBRARY_DEPENDENCIES
-    ${protobufutil_SOURCE_DIR}/vendor/src/gmock/libgmock.a
-    ${protobufutil_SOURCE_DIR}/vendor/src/gtest/libgtest.a
-    ${protobufutil_SOURCE_DIR}/vendor/lib/libglog.a
-    ${protobufutil_SOURCE_DIR}/vendor/lib/libgflags.a
-    ${protobufutil_SOURCE_DIR}/vendor/lib/libssl.a
-    ${protobufutil_SOURCE_DIR}/vendor/lib/libcrypto.a
-    ${protobufutil_SOURCE_DIR}/vendor/lib/libprotobuf.a
+    ${EXTERNAL_PREFIX}/src/gmock/libgmock.a
+    ${EXTERNAL_PREFIX}/src/gtest/libgtest.a
+    ${EXTERNAL_PREFIX}/lib/libglog.a
+    ${EXTERNAL_PREFIX}/lib/libgflags.a
+    ${EXTERNAL_PREFIX}/lib/libssl.a
+    ${EXTERNAL_PREFIX}/lib/libcrypto.a
+    ${EXTERNAL_PREFIX}/lib/libprotobuf.a
     dl
 )
 set(TEST_BINARY protobufutil_test)
