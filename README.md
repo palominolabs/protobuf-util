@@ -1,3 +1,5 @@
+[![Built on CloudBees](https://palominolabs.ci.cloudbees.com/job/protobufutil/badge/icon)](https://palominolabs.ci.cloudbees.com/job/protobufutil/)
+
 Introduction
 ============
 Protobufutil is a library of helper routines for reading and writing protocol
