@@ -18,3 +18,5 @@ protobufutil.xcodeproj
 .idea
 *.iml
 *.swp
+
+.DS_Store
