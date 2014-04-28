@@ -44,17 +44,6 @@ class MessageStream : public MessageStreamInterface {
     DISALLOW_COPY_AND_ASSIGN(MessageStream);
 };
 
-class MockMessageStream : public MessageStreamInterface {
-    public:
-    MockMessageStream() {}
-    MOCK_METHOD2(ReadMessage, MessageStreamReadStatus(::google::protobuf::Message *message,
-        IncomingValueInterface** value));
-    MOCK_METHOD2(WriteMessage, bool(const ::google::protobuf::Message &message,
-        const OutgoingValueInterface& value));
-    MOCK_METHOD0(BytesRead, int64_t());
-    MOCK_METHOD0(BytesWritten, int64_t());
-};
-
 class MessageStreamFactoryInterface {
     public:
     virtual bool NewMessageStream(int fd, bool use_ssl, uint32_t max_message_size_bytes,
@@ -73,15 +62,6 @@ class MessageStreamFactory : public MessageStreamFactoryInterface {
     SSL_CTX *ssl_context_;
     IncomingValueFactoryInterface &value_factory_;
     DISALLOW_COPY_AND_ASSIGN(MessageStreamFactory);
-};
-
-class MockMessageStreamFactory : public MessageStreamFactoryInterface {
-    public:
-    MockMessageStreamFactory() {}
-    virtual ~MockMessageStreamFactory() {}
-    MOCK_METHOD4(NewMessageStream,
-        bool(int fd, bool use_ssl, uint32_t max_message_size_bytes,
-            MessageStreamInterface **message_stream));
 };
 
 }  // namespace protobufutil

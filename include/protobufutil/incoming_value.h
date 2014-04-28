@@ -45,15 +45,6 @@ class IncomingValueInterface {
     virtual void Consume() = 0;
 };
 
-class MockIncomingValue : public IncomingValueInterface {
-    public:
-    MockIncomingValue() {}
-    MOCK_METHOD0(size, size_t());
-    MOCK_METHOD1(TransferToFile, bool(int fd));
-    MOCK_METHOD1(ToString, bool(std::string *result));
-    MOCK_METHOD0(Consume, void());
-};
-
 /*
  * IncomingStringValue represents a value stored internally as a plain string.
  * It's preferable to use SpliceableValue whenever possible because of its
