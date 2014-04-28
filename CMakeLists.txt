@@ -145,20 +145,6 @@ add_custom_target(test
     COMMAND ${TEST_BINARY} --gtest_output=xml:gtestresults.xml
     DEPENDS ${TEST_BINARY}
 )
-
-# This makes it easy to force XCode to always dump binaries in the working directory to be
-# consistent with non-XCode builds
-macro(store_build_products_in_working_dir TARGET_NAME)
-    set_target_properties( ${TARGET_NAME} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG  ${CMAKE_SOURCE_DIR}
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}
-    )
-endmacro(store_build_products_in_working_dir)
-store_build_products_in_working_dir(protobufutil)
-store_build_products_in_working_dir(${TEST_BINARY})
-
 if(APPLE)
     add_custom_target(test_valgrind
         COMMAND echo "Valgrind not supported on OSX")
