@@ -163,7 +163,7 @@ if(APPLE)
         COMMAND echo "Valgrind not supported on OSX")
 else(APPLE)
     add_custom_target(test_valgrind
-        COMMAND valgrind --leak-check=full --show-reachable=yes --track-fds=yes --suppressions=valgrind.supp ./${TEST_BINARY}
+        COMMAND valgrind --leak-check=full --show-reachable=yes --track-fds=yes --suppressions=${CMAKE_SOURCE_DIR}/valgrind.supp ./${TEST_BINARY}
         DEPENDS ${TEST_BINARY}
     )
 endif(APPLE)
