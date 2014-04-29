@@ -31,7 +31,10 @@ else(APPLE)
     endif(${BUILD_FOR_ARM})
 endif(APPLE)
 
-set(CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-unknown-warning-option -Wno-null-dereference -DGTEST_USE_OWN_TR1_TUPLE=1")
+set(ADDITIONAL_CXX_FLAGS "--std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-unknown-warning-option -Wno-null-dereference -DGTEST_USE_OWN_TR1_TUPLE=1")
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${ADDITIONAL_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${ADDITIONAL_CXX_FLAGS}")
 
 include(ExternalProject)
 set(EXTERNAL_PROJECTS gflags glog gmock gtest openssl protobuf)
@@ -149,20 +152,6 @@ add_custom_target(test
     COMMAND ${TEST_BINARY} --gtest_output=xml:gtestresults.xml
     DEPENDS ${TEST_BINARY}
 )
-
-# This makes it easy to force XCode to always dump binaries in the working directory to be
-# consistent with non-XCode builds
-macro(store_build_products_in_working_dir TARGET_NAME)
-    set_target_properties( ${TARGET_NAME} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY_DEBUG  ${CMAKE_SOURCE_DIR}
-        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}
-        ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}
-    )
-endmacro(store_build_products_in_working_dir)
-store_build_products_in_working_dir(protobufutil)
-store_build_products_in_working_dir(${TEST_BINARY})
-
 if(APPLE)
     add_custom_target(test_valgrind
         COMMAND echo "Valgrind not supported on OSX")
@@ -170,7 +159,7 @@ if(APPLE)
         COMMAND echo "Valgrind not supported on OSX")
 else(APPLE)
     add_custom_target(test_valgrind
-        COMMAND valgrind --leak-check=full --show-reachable=yes --track-fds=yes --suppressions=valgrind.supp ./${TEST_BINARY}
+        COMMAND valgrind --leak-check=full --show-reachable=yes --track-fds=yes --suppressions=${CMAKE_SOURCE_DIR}/valgrind.supp ./${TEST_BINARY}
         DEPENDS ${TEST_BINARY}
     )
 endif(APPLE)
