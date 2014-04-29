@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "gmock/gmock.h"
-
 #include "common.h"
 
 namespace palominolabs {
