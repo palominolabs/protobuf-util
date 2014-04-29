@@ -4,6 +4,13 @@ project(protobufutil CXX C)
 find_package (Threads)
 
 option(BUILD_FOR_ARM "Build for ARM instead of x86" off)
+option(BUILD_PIC "Build static PIC" off)
+
+set(BUILD_PIC_COMPILER_FLAG "")
+
+if(BUILD_PIC)
+  set(BUILD_PIC_COMPILER_FLAG "-fPIC")  
+endif(BUILD_PIC)
 
 if(APPLE)
     set(CMAKE_C_COMPILER "clang")
@@ -16,7 +23,7 @@ else(APPLE)
         set(CMAKE_RANLIB "arm-marvell-linux-gnueabi-ranlib")
         set(OPENSSL_CONFIGURE_COMMAND ../openssl/Configure linux-armv4)
         set(CONFIG_HOST_FLAG --host=arm)
-        set(CHILD_MAKE_FLAGS CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} RANLIB=${CMAKE_RANLIB})
+        set(CHILD_MAKE_FLAGS CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} RANLIB=${CMAKE_RANLIB} CFLAGS=${BUILD_PIC_COMPILER_FLAG})
     else(${BUILD_FOR_ARM})
         set(CMAKE_C_COMPILER "gcc")
         set(CMAKE_CXX_COMPILER "g++")
@@ -78,7 +85,7 @@ ExternalProject_add(
     URL "${protobufutil_SOURCE_DIR}/tarballs/openssl-1.0.1e.tar.gz"
     URL_MD5 "66bf6f10f060d561929de96f9dfe5b8c"
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${EXTERNAL_PREFIX}
+    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${EXTERNAL_PREFIX} ${BUILD_PIC_COMPILER_FLAG}
     BUILD_COMMAND touch apps/openssl && touch openssl.pc && make ${CHILD_MAKE_FLAGS} build_libs libssl.pc libcrypto.pc
     INSTALL_COMMAND make install_sw
 )
@@ -91,7 +98,7 @@ ExternalProject_add(
     PREFIX ${EXTERNAL_PREFIX}/host
     URL "${protobufutil_SOURCE_DIR}/tarballs/protobuf-2.5.0.tar.bz2"
     URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
-    CONFIGURE_COMMAND ../protoc/configure --prefix=${EXTERNAL_PREFIX}/host --enable-static
+    CONFIGURE_COMMAND ../protoc/configure --prefix=${EXTERNAL_PREFIX}/host --enable-static CFLAGS=${BUILD_PIC_COMPILER_FLAG}
 )
 
 ExternalProject_add(
