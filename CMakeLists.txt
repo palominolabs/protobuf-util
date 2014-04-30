@@ -4,6 +4,16 @@ project(protobufutil CXX C)
 find_package (Threads)
 
 option(BUILD_FOR_ARM "Build for ARM instead of x86" off)
+option(BUILD_PIC "Build static PIC" off)
+
+set(BUILD_PIC_COMPILER_FLAG "")
+set(PIC_MAKE_FLAGS "")
+
+if(BUILD_PIC)
+  set(BUILD_PIC_COMPILER_FLAG "-fPIC")  
+  set(PIC_MAKE_FLAGS CPPFLAGS=${BUILD_PIC_COMPILER_FLAG})
+endif(BUILD_PIC)
+
 
 if(APPLE)
     set(CMAKE_C_COMPILER "clang")
@@ -26,6 +36,7 @@ endif(APPLE)
 
 set(ADDITIONAL_CXX_FLAGS "--std=c++11 -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-local-typedefs -Wno-unknown-warning-option -Wno-null-dereference -DGTEST_USE_OWN_TR1_TUPLE=1")
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} ${ADDITIONAL_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${ADDITIONAL_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${ADDITIONAL_CXX_FLAGS}")
 
@@ -39,7 +50,7 @@ ExternalProject_add(
     PREFIX ${EXTERNAL_PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/gflags-2.0-no-svn-files.tar.gz"
     URL_MD5 "9084829124e02a7e6be0f0f824523423"
-    CONFIGURE_COMMAND ../gflags/configure --prefix=${EXTERNAL_PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    CONFIGURE_COMMAND ../gflags/configure --prefix=${EXTERNAL_PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS} ${PIC_MAKE_FLAGS}
 )
 
 ExternalProject_add(
@@ -48,7 +59,7 @@ ExternalProject_add(
     URL "${protobufutil_SOURCE_DIR}/tarballs/glog-0.3.3.tar.gz"
     URL_MD5 "a6fd2c22f8996846e34c763422717c18"
     PATCH_COMMAND sh ${protobufutil_SOURCE_DIR}/patches/apply-glog-patches.sh ${protobufutil_SOURCE_DIR}
-    CONFIGURE_COMMAND ../glog/configure --prefix=${EXTERNAL_PREFIX} --with-gflags=${EXTERNAL_PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    CONFIGURE_COMMAND ../glog/configure --prefix=${EXTERNAL_PREFIX} --with-gflags=${EXTERNAL_PREFIX} --enable-static ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS} ${PIC_MAKE_FLAGS}
     DEPENDS gflags
 )
 
@@ -81,7 +92,7 @@ ExternalProject_add(
     URL "${protobufutil_SOURCE_DIR}/tarballs/openssl-1.0.1e.tar.gz"
     URL_MD5 "66bf6f10f060d561929de96f9dfe5b8c"
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${EXTERNAL_PREFIX}
+    CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${EXTERNAL_PREFIX} ${BUILD_PIC_COMPILER_FLAG}
     BUILD_COMMAND touch apps/openssl && touch openssl.pc && make ${CHILD_MAKE_FLAGS} build_libs libssl.pc libcrypto.pc
     INSTALL_COMMAND make install_sw
 )
@@ -102,7 +113,7 @@ ExternalProject_add(
     PREFIX ${EXTERNAL_PREFIX}
     URL "${protobufutil_SOURCE_DIR}/tarballs/protobuf-2.5.0.tar.bz2"
     URL_MD5 "a72001a9067a4c2c4e0e836d0f92ece4"
-    CONFIGURE_COMMAND ../protobuf/configure --prefix=${EXTERNAL_PREFIX} --enable-static --with-protoc=../../host/bin/protoc ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS}
+    CONFIGURE_COMMAND ../protobuf/configure --prefix=${EXTERNAL_PREFIX} --enable-static --with-protoc=../../host/bin/protoc ${CONFIG_HOST_FLAG} ${CHILD_MAKE_FLAGS} ${PIC_MAKE_FLAGS}
     DEPENDS protoc
 )
 

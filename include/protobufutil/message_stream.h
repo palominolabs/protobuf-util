@@ -1,7 +1,6 @@
 #ifndef PROTOBUFUTIL_MESSAGE_STREAM_H_
 #define PROTOBUFUTIL_MESSAGE_STREAM_H_
 
-#include "gmock/gmock.h"
 #include "google/protobuf/message.h"
 #include "openssl/ssl.h"
 
