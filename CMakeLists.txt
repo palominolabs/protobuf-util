@@ -89,8 +89,8 @@ ExternalProject_add(
 ExternalProject_add(
     openssl
     PREFIX ${EXTERNAL_PREFIX}
-    URL "${protobufutil_SOURCE_DIR}/tarballs/openssl-1.0.1e.tar.gz"
-    URL_MD5 "66bf6f10f060d561929de96f9dfe5b8c"
+    URL "${protobufutil_SOURCE_DIR}/tarballs/openssl-1.0.1g.tar.gz"
+    URL_MD5 "de62b43dfcd858e66a74bee1c834e959"
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ${OPENSSL_CONFIGURE_COMMAND} --prefix=${EXTERNAL_PREFIX} ${BUILD_PIC_COMPILER_FLAG}
     BUILD_COMMAND touch apps/openssl && touch openssl.pc && make ${CHILD_MAKE_FLAGS} build_libs libssl.pc libcrypto.pc
