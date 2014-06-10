@@ -44,10 +44,25 @@ bool SslByteStream::Read(void *buf, size_t n) {
         // SSL_read with 0 bytes causes openssl to get really upset in mysterious ways
         return true;
     }
-    if (SSL_read(ssl_, buf, n) != static_cast<int>(n)) {
+
+    // To be able to move the pointed as data arrives we need to cast it to a complete
+    // c type.
+    uint8_t* byte_buffer = static_cast<uint8_t*>(buf);
+
+    while (n > 0) {
+      int bytes_read = SSL_read(ssl_, byte_buffer, n);
+
+      if (bytes_read > 0) {
+        // If SSL_read succeeds it returns the number of bytes read
+        n -= bytes_read;
+        byte_buffer += bytes_read;
+      } else {
+        // Return values of 0 or <0 indicate an error in SSL_read
         LOG(WARNING) << "Failed to read " << n << " bytes over SSL connection";
         return false;
+      }
     }
+
     return true;
 }
 
@@ -56,10 +71,25 @@ bool SslByteStream::Write(const void *buf, size_t n) {
         // It's not clear whether SSL_write can handle a write of 0 bytes
         return true;
     }
-    if (SSL_write(ssl_, buf, n) != static_cast<int>(n)) {
+
+    // To be able to move the pointed as data arrives we need to cast it to a complete
+    // c type.
+    const uint8_t* byte_buffer = static_cast<const uint8_t*>(buf);
+
+    while (n > 0) {
+      int bytes_written = SSL_write(ssl_, byte_buffer, n);
+
+      if (bytes_written > 0) {
+        // If SSL_read succeeds it returns the number of bytes read
+        n -= bytes_written;
+        byte_buffer += bytes_written;
+      } else {
+        // Return values of 0 or <0 indicate an error in SSL_read
         LOG(WARNING) << "Failed to write " << n << " bytes over SSL connection";
         return false;
+      }
     }
+
     return true;
 }
 
